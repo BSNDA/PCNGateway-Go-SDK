@@ -23,8 +23,8 @@
 需要引入下面的包
 ```
 import (
-    "bsn-sdk-go/pkg/client/fabric"
-    "bsn-sdk-go/pkg/core/config"
+    "github.com/BSNDA/PCNGateway-Go-SDK/pkg/client/fabric"
+    "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/config"
 	)
 ```
 #### 初始化config
