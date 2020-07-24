@@ -1,4 +1,4 @@
-package trans
+package fabric
 
 import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"

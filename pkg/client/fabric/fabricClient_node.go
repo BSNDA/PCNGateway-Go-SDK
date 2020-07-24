@@ -6,7 +6,7 @@ import (
 	"github.com/wonderivan/logger"
 
 	"encoding/json"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans/fabric"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 )
 
@@ -21,7 +21,7 @@ func (c *FabricClient) SdkTran(body nodereq.TransReqDataBody) (*noderes.TranResD
 
 	request := body.GetTransRequest(c.Config.GetAppInfo().ChannelId)
 
-	transData, _, err := trans.CreateRequest(user, request)
+	transData, _, err := fabric.CreateRequest(user, request)
 
 	if err != nil {
 		return nil, err

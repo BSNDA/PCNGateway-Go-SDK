@@ -3,16 +3,34 @@ package keystore
 import (
 	"crypto"
 	"crypto/x509"
+	"fmt"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
-	ecdsaUtil "github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/esdsa"
+	ecdsaUtil "github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/secp256r1"
 	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/bccsp"
+	"github.com/tjfoc/gmsm/sm2"
 	"io"
+	"reflect"
+)
+
+var (
+	default_uid = []byte{0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38}
 )
 
 type ecdsaSigner struct{}
 
 func (s *ecdsaSigner) Sign(k bccsp.Key, digest []byte, opts bccsp.SignerOpts) ([]byte, error) {
-	return ecdsaUtil.SignECDSA(k.(*ecdsaPrivateKey).privKey, digest)
+	keyType := reflect.TypeOf(k)
+	fmt.Println(keyType)
+	if keyType.String() == "*keystore.smPrivateKey" {
+		r, s, err := sm2.Sm2Sign(k.(*smPrivateKey).privKey, digest, default_uid)
+		if err != nil {
+			return nil, err
+		}
+		sign, err := sm2.SignDigitToSignData(r, s)
+		return sign, err
+	} else {
+		return ecdsaUtil.SignECDSA(k.(*ecdsaPrivateKey).privKey, digest)
+	}
 }
 
 type bccspCryptoSigner struct {
@@ -64,6 +82,8 @@ func DERToPublicKey(raw []byte) (pub interface{}, err error) {
 	}
 
 	key, err := x509.ParsePKIXPublicKey(raw)
-
+	if err != nil {
+		key, err = sm2.ParseSm2PublicKey(raw)
+	}
 	return key, err
 }

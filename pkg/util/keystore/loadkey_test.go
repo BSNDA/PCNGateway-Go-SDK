@@ -9,8 +9,8 @@ import (
 
 func TestLoadKey(t *testing.T) {
 
-	ks, _ := NewFileBasedKeyStore(nil, "./test/msp/keystore", false)
-	us := userstore.NewUserStore("./test/msp")
+	ks, _ := NewFileBasedKeyStore(nil, "F:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/github.com/BSNDA/PCNGateway-Go-SDK/test/msp/keystore", false)
+	us := userstore.NewUserStore("F:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/github.com/BSNDA/PCNGateway-Go-SDK/test/msp")
 
 	user := &msp.UserData{
 		UserName: "sdktest",
