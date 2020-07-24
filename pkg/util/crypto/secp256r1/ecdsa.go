@@ -1,4 +1,4 @@
-package ecdsa
+package secp256r1
 
 import (
 	"crypto/ecdsa"
@@ -13,6 +13,8 @@ import (
 	"io/ioutil"
 	"math/big"
 )
+
+const publicKeyLength = 64
 
 type ECDSASignature struct {
 	R, S *big.Int
@@ -206,4 +208,15 @@ func GetSHA256HASH(data string) []byte {
 	hash := h.Sum(nil)
 	return hash
 
+}
+
+// ECDSAPubBytes return esdsa public key as slice
+func ECDSAPubBytes(pub *ecdsa.PublicKey) []byte {
+	if pub == nil || pub.X == nil || pub.Y == nil {
+		return nil
+	}
+	pubBytes := make([]byte, publicKeyLength)
+	copy(pubBytes[:], pub.X.Bytes())
+	copy(pubBytes[publicKeyLength/2:], pub.Y.Bytes())
+	return pubBytes
 }

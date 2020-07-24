@@ -7,9 +7,10 @@ import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/sign"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/esdsa"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/secp256k1"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/secp256r1"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/sm"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/keystore"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/sm2"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/userstore"
 	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/bccsp"
 
@@ -30,7 +31,7 @@ type Client struct {
 func (c *Client) SetAlgorithm(algorithmType enum.App_AlgorithmType, puk, pri string) error {
 	switch algorithmType {
 	case enum.AppAlgorithmType_SM2:
-		sh, err := sm2.NewSM2Handle(puk, pri)
+		sh, err := sm.NewSM2Handle(puk, pri)
 		if err != nil {
 			return err
 		} else {
@@ -38,7 +39,15 @@ func (c *Client) SetAlgorithm(algorithmType enum.App_AlgorithmType, puk, pri str
 			return nil
 		}
 	case enum.AppAlgorithmType_R1:
-		sh, err := ecdsa.NewEcdsaR1Handle(puk, pri)
+		sh, err := secp256r1.NewEcdsaR1Handle(puk, pri)
+		if err != nil {
+			return err
+		} else {
+			c.sign = sign.NewCrypto(sh)
+			return nil
+		}
+	case enum.AppAlgorithmType_K1:
+		sh, err := secp256k1.NewEcdsaK1Handle(puk, pri)
 		if err != nil {
 			return err
 		} else {

@@ -1,49 +1,38 @@
-package sm2
+package sm
 
 import (
 	"encoding/pem"
-	"fmt"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto"
 	"github.com/tjfoc/gmsm/sm2"
 	"github.com/tjfoc/gmsm/sm3"
 )
 
 var (
-//default_uid = []byte{0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38}
+	default_uid = []byte{0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38}
 )
 
 func getSmPuk(pub string) (*sm2.PublicKey, error) {
 	block, _ := pem.Decode([]byte(pub))
 
-	fmt.Println(block.Type)
-
-	if block.Type == "PUBLIC KEY" {
-
+	if block == nil {
+		return nil, errors.New("load public key failed")
+	}
+	if block.Type == crypto.PublicKeyType {
 		return sm2.ReadPublicKeyFromMem([]byte(pub), nil)
 	}
 
-	if block.Type == "CERTIFICATE" {
+	if block.Type == crypto.CertType {
 		x509Cert, err := sm2.ParseCertificate(block.Bytes)
-
 		if err != nil {
 			return nil, err
 		}
-
 		return sm2.ParseSm2PublicKey(x509Cert.RawSubjectPublicKeyInfo)
-
 	}
-
 	return nil, errors.New("Error")
-
 }
 
 func NewSM2Handle(pub, pri string) (*sm2Handle, error) {
-
-	pubKey, err := getSmPuk(pub)
-
-	if err != nil {
-		return nil, errors.New("load public key has error")
-	}
 
 	priKey, err := sm2.ReadPrivateKeyFromMem([]byte(pri), nil)
 
@@ -51,6 +40,16 @@ func NewSM2Handle(pub, pri string) (*sm2Handle, error) {
 		return nil, errors.New("load private key has error")
 	}
 
+	var pubKey *sm2.PublicKey
+
+	if pub == "" {
+		pubKey = &priKey.PublicKey
+	} else {
+		pubKey, err = getSmPuk(pub)
+		if err != nil {
+			return nil, errors.New("load public key has error")
+		}
+	}
 	ecdsa := &sm2Handle{
 		pubKey: pubKey,
 		priKey: priKey,
@@ -78,9 +77,6 @@ func (e *sm2Handle) Sign(digest []byte) ([]byte, error) {
 	r, s, err := sm2.Sm2Sign(e.priKey, digest, default_uid)
 
 	sign, err := sm2.SignDigitToSignData(r, s)
-
-	fmt.Println("R:", r)
-	fmt.Println("S:", s)
 	if err != nil {
 		return nil, err
 	}
