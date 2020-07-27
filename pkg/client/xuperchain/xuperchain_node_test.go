@@ -21,8 +21,8 @@ func TestXuperChainClient_ReqChainCode_Insert_Data(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	body := req.CallContractReqDataReqDataBody{
-		UserId:       "zxl072201707",
-		UserAddr:     "2BMwkb9R3khePcCPj1QzVRQa8pfNurAnAQ",
+		UserId:       "zxl072201708",
+		UserAddr:     "2CzpFVY3KYQcZZXBfEa6hmrFn17o4FMBdf",
 		ContractName: "cc_appxc_01",
 		FuncName:     "insert_data",
 		FuncParam:    "{\"base_key\":\"dev_0001\",\"base_value\":\"aaron1\"}",
@@ -45,8 +45,8 @@ func TestXuperChainClient_ReqChainCode_Update_Data(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	body := req.CallContractReqDataReqDataBody{
-		UserId:       "zxl072201707",
-		UserAddr:     "2BMwkb9R3khePcCPj1QzVRQa8pfNurAnAQ",
+		UserId:       "zxl072201708",
+		UserAddr:     "2CzpFVY3KYQcZZXBfEa6hmrFn17o4FMBdf",
 		ContractName: "cc_appxc_01",
 		FuncName:     "update_data",
 		FuncParam:    "{\"base_key\":\"dev_0001\",\"base_value\":\"aaron.zhang\"}",
@@ -69,8 +69,8 @@ func TestXuperChainClient_ReqChainCode_Select_Data(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	body := req.CallContractReqDataReqDataBody{
-		UserId:       "zxl072201707",
-		UserAddr:     "2BMwkb9R3khePcCPj1QzVRQa8pfNurAnAQ",
+		UserId:       "zxl072201708",
+		UserAddr:     "2CzpFVY3KYQcZZXBfEa6hmrFn17o4FMBdf",
 		ContractName: "cc_appxc_01",
 		FuncName:     "select_data",
 		FuncParam:    "{\"base_key\":\"dev_0001\"}",
@@ -94,8 +94,8 @@ func TestXuperChainClient_ReqChainCode_Remove_Data(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	body := req.CallContractReqDataReqDataBody{
-		UserId:       "zxl072201707",
-		UserAddr:     "2BMwkb9R3khePcCPj1QzVRQa8pfNurAnAQ",
+		UserId:       "zxl072201708",
+		UserAddr:     "2CzpFVY3KYQcZZXBfEa6hmrFn17o4FMBdf",
 		ContractName: "cc_appxc_01",
 		FuncName:     "remove_data",
 		FuncParam:    "{\"base_key\":\"dev_0001\"}",
@@ -119,7 +119,7 @@ func TestXuperChainClient_GetTxInfo(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	body := req.GetTxInfoReqDataBody{
-		TxHash: "1a869cfe2dc09086fb2389ed6934f66baf70467cf4634cbfe756e4b2e478c384",
+		TxHash: "8ac7856fb8521ed90a40c9667ff1b617ab2bbaa076e051f58067915f1d9c3e6e",
 	}
 	res, err := client.GetTxInfo(body)
 	if err != nil {
@@ -140,7 +140,7 @@ func TestXuperChainClient_GetBlockInfo_ByBlockHeight(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	body := req.GetBlockInfoReqDataBody{
-		BlockHeight: 275006,
+		BlockHeight: 276229,
 		BlockHash:   "", //must be empty
 	}
 	res, err := client.GetBlockInfo(body)
@@ -162,7 +162,7 @@ func TestXuperChainClient_GetBlockInfo_ByBlockHash(t *testing.T) {
 	}
 	body := req.GetBlockInfoReqDataBody{
 		BlockHeight: 0, //must be zero
-		BlockHash:   "5b8237023cfe025c6fec9ad5a05f295f6097ceba9980199a5989361013a557ed",
+		BlockHash:   "bae9328a98409aa5d0c9d0a061d0ef59dfc7f22add23aa50fb9cea7fcf6a5ea8",
 	}
 	res, err := client.GetBlockInfo(body)
 	if err != nil {

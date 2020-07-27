@@ -16,7 +16,7 @@ func TestXuperChainClient_RegisterUser(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	body := req.RegisterUserReqDataBody{
-		UserId: "zxl072201707",
+		UserId: "zxl072201708",
 	}
 	res, err := client.RegisterUser(body)
 	if err != nil {
