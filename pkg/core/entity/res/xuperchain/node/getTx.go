@@ -23,6 +23,6 @@ func (f *GetTxInfoResData) GetEncryptionValue() string {
 		fp += v.MethodName
 		fp += v.Args
 	}
-	fp += strconv.FormatInt(f.Body.ReceivedTimestamp, 19)
+	fp += strconv.FormatInt(f.Body.ReceivedTimestamp, 10)
 	return fp
 }

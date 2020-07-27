@@ -4,17 +4,17 @@ import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
 )
 
-type HandleContractResData struct {
+type CallContractResData struct {
 	base.BaseResModel
-	Body *HandleContractResDataBody `json:"body"` // 消息体
+	Body *CallContractResDataBody `json:"body"` // 消息体
 }
 
-type HandleContractResDataBody struct {
+type CallContractResDataBody struct {
 	TxId      string `json:"txId"`
 	QueryInfo string `json:"queryInfo"`
 }
 
-func (f *HandleContractResData) GetEncryptionValue() string {
+func (f *CallContractResData) GetEncryptionValue() string {
 	if f.Body == nil {
 		return f.GetBaseEncryptionValue()
 	}
