@@ -7,27 +7,21 @@ import (
 )
 
 func TestXuperChainClient_RegisterUser(t *testing.T) {
-	config, err := config2.NewMockTestFiscoSMConfig()
-
+	config, err := config2.NewMockXuperchainSMConfig()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-
 	client, err := NewXuperChainClient(config)
-
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-
 	body := req.RegisterUserReqDataBody{
-		UserId: "test0623",
+		UserId: "zxl072201707",
 	}
-
 	res, err := client.RegisterUser(body)
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	if res.Header.Code != 0 {
 		t.Fatal(res.Header.Msg)
 	}

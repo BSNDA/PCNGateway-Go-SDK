@@ -15,7 +15,7 @@ func (f *GetBlockInfoResData) GetEncryptionValue() string {
 		return f.GetBaseEncryptionValue()
 	}
 	fp := f.GetBaseEncryptionValue()
-	fp = fp + strconv.Itoa(int(f.Body.Version)) + f.Body.Blockid + f.Body.PreHash + strconv.FormatInt(f.Body.Height, 19) + strconv.FormatInt(f.Body.Timestamp, 19)
+	fp = fp + strconv.Itoa(int(f.Body.Version)) + f.Body.Blockid + f.Body.PreHash + strconv.FormatInt(f.Body.Height, 10) + strconv.FormatInt(f.Body.Timestamp, 10)
 	for _, t := range f.Body.Transactions {
 		fp = fp + t.Txid + t.Blockid + strconv.Itoa(int(t.Version))
 		for _, v := range t.ContractRequests {
@@ -23,7 +23,7 @@ func (f *GetBlockInfoResData) GetEncryptionValue() string {
 			fp += v.MethodName
 			fp += v.Args
 		}
-		fp += strconv.FormatInt(t.ReceivedTimestamp, 19)
+		fp += strconv.FormatInt(t.ReceivedTimestamp, 10)
 	}
 	fp += strconv.Itoa(int(f.Body.TxCount)) + f.Body.NextHash
 	return fp

@@ -275,23 +275,25 @@ eeZyjQmR
 
 	return config, nil
 }
-func NewMockTestXuperchainSMConfig() (*Config, error) {
+
+//
+func NewMockXuperchainSMConfig() (*Config, error) {
 
 	return NewConfig(
 		"http://192.168.1.43:17502",
-		"USER0001202005281426464614357",
-		"app0001202006221045063821068",
+		"USER0006202007171549487497611",
+		"app0006202007171545196904721",
 		`-----BEGIN PUBLIC KEY-----
 MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAECwJ5ftuqndO9H3ks1hD8cB6IA9lx
 /b0Z2hnFZ77rgRm9Q4lY1aqIhkM63Lh6X7uwPsoRC1xkS0PMp5x/jnRWcw==
 -----END PUBLIC KEY-----`,
 		`-----BEGIN PRIVATE KEY-----
-MIGTAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBHkwdwIBAQQg3ail5qa1WdSCaE4l
-NDtKsH43sn4oLU2Q4Ag9g1zmEuWgCgYIKoEcz1UBgi2hRANCAATnkyph+Ukd5mSX
-Dnr0d0JNH5lzMCYlFIf/8e3LOb8R1qvYEI/ePU6TVX7UcEbCAnVPlDMlv/oesYsn
-j8PiaBZv
+MIGTAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBHkwdwIBAQQgzPnol3cHQyF6tJ4k
+cr8zqfEQrsfFM0MOmHzHWNvJuVygCgYIKoEcz1UBgi2hRANCAATAfT0PI75pduz/
+LhD11NFPd2RYCrgeigmAbKBPs9Vj5FlrW3+PFVQAR7OJcUmB8MYR33VS1hCINv9u
+EhxwJo5Q
 -----END PRIVATE KEY-----`,
 		"test/msp",
-		"F:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/github.com/BSNDA/PCNGateway-Go-SDK/test/cert/bsn_gateway_https.crt",
+		"D:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/github.com/BSNDA/PCNGateway-Go-SDK/test/cert/bsn_gateway_https.crt",
 	)
 }
