@@ -1,11 +1,3 @@
-/**
- * @Author: Gao Chenxi
- * @Description:
- * @File:  event
- * @Version: 1.0.0
- * @Date: 2020/6/9 15:15
- */
-
 package event
 
 type EventList struct {

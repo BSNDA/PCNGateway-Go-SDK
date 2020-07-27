@@ -1,11 +1,3 @@
-/**
- * @Author: Gao Chenxi
- * @Description:
- * @File:  transResData
- * @Version: 1.0.0
- * @Date: 2020/6/4 17:38
- */
-
 package node
 
 import (

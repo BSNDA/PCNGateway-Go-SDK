@@ -1,11 +1,3 @@
-/**
- * @Author: Gao Chenxi
- * @Description:
- * @File:  blockTxReceiptResData
- * @Version: 1.0.0
- * @Date: 2020/6/9 14:33
- */
-
 package node
 
 import (

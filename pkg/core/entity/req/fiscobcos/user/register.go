@@ -1,6 +1,8 @@
 package user
 
-import "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
+import (
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
+)
 
 type RegisterReqData struct {
 	base.BaseReqModel

@@ -1,14 +1,8 @@
-/**
- * @Author: Gao Chenxi
- * @Description:
- * @File:  transReqDataBody
- * @Version: 1.0.0
- * @Date: 2020/6/4 17:37
- */
-
 package node
 
-import "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
+import (
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
+)
 
 type TransReqData struct {
 	base.BaseReqModel

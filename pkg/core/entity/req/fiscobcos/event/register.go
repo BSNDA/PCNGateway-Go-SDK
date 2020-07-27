@@ -1,11 +1,3 @@
-/**
- * @Author: Gao Chenxi
- * @Description:
- * @File:  register
- * @Version: 1.0.0
- * @Date: 2020/6/9 15:10
- */
-
 package event
 
 import (

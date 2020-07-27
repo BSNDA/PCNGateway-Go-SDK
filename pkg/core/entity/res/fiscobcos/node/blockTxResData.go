@@ -1,11 +1,3 @@
-/**
- * @Author: Gao Chenxi
- * @Description:
- * @File:  blockTxResData
- * @Version: 1.0.0
- * @Date: 2020/6/5 14:35
- */
-
 package node
 
 import (
