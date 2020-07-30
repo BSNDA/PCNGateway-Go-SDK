@@ -1,16 +1,8 @@
-/**
- * @Author: Gao Chenxi
- * @Description:
- * @File:  mockConfig
- * @Version: 1.0.0
- * @Date: 2020/6/9 14:48
- */
-
 package config
 
 const (
-	_MspDir    = "F:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/bsn-sdk-go/test/msp"
-	_HttpsCert = "F:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/bsn-sdk-go/test/cert/bsn_gateway_https.crt"
+	_MspDir    = "D:/test/bsn-sdk-go/msp"
+	_HttpsCert = "D:/test/bsn-sdk-go/cert/bsn_gateway_https.crt"
 )
 
 func NewFabricSMTrustConfig() (*Config, error) {
@@ -96,8 +88,8 @@ MIGNAgEAMBAGByqGSM49AgEGBSuBBAAKBHYwdAIBAQQgs9DOx+bq2PlWVFRESHAM
 VBKjDU9co5TIUzY203/utIugBwYFK4EEAAqhRANCAAR2T4i+jP7Tw1kFcHwGttKT
 OMD7p1OHVE/evqTNlHRkYgDxEKBFE5Yoc/SsgStHhn9P9Isdz1xXYoiIzvPm9cFQ
 -----END PRIVATE KEY-----`,
-		"test/msp",
-		"F:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/github.com/BSNDA/PCNGateway-Go-SDK/test/cert/bsn_gateway_https.crt",
+		_MspDir,
+		_HttpsCert,
 	)
 }
 
@@ -117,15 +109,15 @@ NDtKsH43sn4oLU2Q4Ag9g1zmEuWgCgYIKoEcz1UBgi2hRANCAATnkyph+Ukd5mSX
 Dnr0d0JNH5lzMCYlFIf/8e3LOb8R1qvYEI/ePU6TVX7UcEbCAnVPlDMlv/oesYsn
 j8PiaBZv
 -----END PRIVATE KEY-----`,
-		"test/msp",
-		"F:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/github.com/BSNDA/PCNGateway-Go-SDK/test/cert/bsn_gateway_https.crt",
+		_MspDir,
+		_HttpsCert,
 	)
 }
 
 func NewMockFiscoConfig1() (*Config, error) {
 	config := &Config{
 		nodeApi:  "https://ningbonode.bsngate.com:17602",
-		mspDir:   " test/msp",
+		mspDir:   _MspDir,
 		httpCert: "F:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/github.com/BSNDA/PCNGateway-Go-SDK/test/cert/bsn_gateway_https.crt",
 		appCert: certInfo{
 			AppPublicCert: `-----BEGIN PUBLIC KEY-----
@@ -161,8 +153,8 @@ func NewMockConfig() (*Config, error) {
 
 	config := &Config{
 		nodeApi:  "https://quanzhounode.bsngate.com:17602",
-		mspDir:   "F:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/github.com/BSNDA/PCNGateway-Go-SDK/test/msp",
-		httpCert: "F:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/github.com/BSNDA/PCNGateway-Go-SDK/test/cert/bsn_gateway_https.crt",
+		mspDir:   _MspDir,
+		httpCert: _HttpsCert,
 		appCert: certInfo{
 			AppPublicCert: `-----BEGIN CERTIFICATE-----
 MIIC+zCCAqGgAwIBAgIUARhAfFSyhzcx9q4LdiYKl2UHo1YwCgYIKoZIzj0EAwIw
@@ -209,8 +201,8 @@ func NewMockT1Config() (*Config, error) {
 
 	config := &Config{
 		nodeApi:  "http://192.168.7.231:17505",
-		mspDir:   "D:/gopath/src/github.com/BSNDA/PCNGateway-Go-SDK/test/msp",
-		httpCert: "D:/gopath/src/github.com/BSNDA/PCNGateway-Go-SDK/test/cert/bsn_gateway_https.crt",
+		mspDir:   _MspDir,
+		httpCert: _HttpsCert,
 		appCert: certInfo{
 			AppPublicCert: `-----BEGIN CERTIFICATE-----
 MIIC+zCCAqGgAwIBAgIUARhAfFSyhzcx9q4LdiYKl2UHo1YwCgYIKoZIzj0EAwIw
@@ -271,7 +263,7 @@ cr8zqfEQrsfFM0MOmHzHWNvJuVygCgYIKoEcz1UBgi2hRANCAATAfT0PI75pduz/
 LhD11NFPd2RYCrgeigmAbKBPs9Vj5FlrW3+PFVQAR7OJcUmB8MYR33VS1hCINv9u
 EhxwJo5Q
 -----END PRIVATE KEY-----`,
-		"test/msp",
-		"D:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/github.com/BSNDA/PCNGateway-Go-SDK/test/cert/bsn_gateway_https.crt",
+		_MspDir,
+		_HttpsCert,
 	)
 }
