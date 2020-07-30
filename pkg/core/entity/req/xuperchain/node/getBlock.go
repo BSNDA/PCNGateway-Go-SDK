@@ -17,5 +17,5 @@ type GetBlockInfoReqDataBody struct {
 
 func (m *GetBlockInfoReqData) GetEncryptionValue() string {
 
-	return m.GetBaseEncryptionValue() + strconv.FormatInt(m.Body.BlockHeight, 19) + m.Body.BlockHash
+	return m.GetBaseEncryptionValue() + strconv.FormatInt(m.Body.BlockHeight, 10) + m.Body.BlockHash
 }
