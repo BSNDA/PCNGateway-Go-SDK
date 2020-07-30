@@ -74,7 +74,7 @@ func (c *FabricClient) LoadUser() {
 		user := users[i]
 		user.MspId = c.Config.GetAppInfo().MspId
 
-		err := keystore.LoadKey(user, c.Ks)
+		err := keystore.LoadKey(user, c.Ks, c.Config.GetAppInfo().AlgorithmType)
 
 		if err == nil {
 			c.Users[user.UserName] = user
@@ -104,7 +104,7 @@ func (c *FabricClient) LoadLocalUser(name string) (*msp.UserData, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = keystore.LoadKey(user, c.Ks)
+	err = keystore.LoadKey(user, c.Ks, c.Config.GetAppInfo().AlgorithmType)
 
 	if err != nil {
 		return nil, err

@@ -127,6 +127,10 @@ func (k *ecdsaPublicKey) PublicKey() (bccsp.Key, error) {
 }
 
 func GetECDSAPrivateKey(key bccsp.Key) *ecdsa.PrivateKey {
-	prk := key.(*ecdsaPrivateKey)
-	return prk.privKey
+	prk, ok := key.(*ecdsaPrivateKey)
+	if ok {
+		return prk.privKey
+	} else {
+		return nil
+	}
 }

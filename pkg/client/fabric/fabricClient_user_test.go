@@ -9,7 +9,7 @@ import (
 
 func TestFabricClient_RegisterUser(t *testing.T) {
 
-	config, err := config2.NewMockConfig()
+	config, err := config2.NewFabricSMTrustConfig()
 
 	if err != nil {
 		t.Fatal(err.Error())
@@ -22,7 +22,7 @@ func TestFabricClient_RegisterUser(t *testing.T) {
 	}
 
 	body := req.RegisterReqDataBody{
-		Name:   "user01",
+		Name:   "user06",
 		Secret: "123456",
 	}
 
@@ -39,7 +39,7 @@ func TestFabricClient_RegisterUser(t *testing.T) {
 
 func TestFabricClient_EnrollUser(t *testing.T) {
 
-	config, err := config2.NewMockConfig()
+	config, err := config2.NewFabricSMTrustConfig()
 
 	if err != nil {
 		t.Fatal(err.Error())

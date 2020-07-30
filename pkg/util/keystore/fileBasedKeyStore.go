@@ -3,6 +3,7 @@ package keystore
 import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/bccsp"
 	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/bccsp/utils"
+	"github.com/tjfoc/gmsm/sm2"
 	"github.com/wonderivan/logger"
 
 	"bytes"
@@ -124,6 +125,8 @@ func (ks *fileBasedKeyStore) GetKey(ski []byte) (bccsp.Key, error) {
 			return &ecdsaPrivateKey{key.(*ecdsa.PrivateKey)}, nil
 		case *rsa.PrivateKey:
 			return &rsaPrivateKey{key.(*rsa.PrivateKey)}, nil
+		case *sm2.PrivateKey:
+			return &smPrivateKey{key.(*sm2.PrivateKey)}, nil
 		default:
 			return nil, errors.New("Secret key type not recognized")
 		}
@@ -164,7 +167,12 @@ func (ks *fileBasedKeyStore) StoreKey(k bccsp.Key) (err error) {
 		if err != nil {
 			return fmt.Errorf("Failed storing ECDSA private key [%s]", err)
 		}
-
+	case *smPrivateKey:
+		kk := k.(*smPrivateKey)
+		err = ks.storePrivateKey(hex.EncodeToString(k.SKI()), kk.privKey)
+		if err != nil {
+			return fmt.Errorf("Failed storing ECDSA private key [%s]", err)
+		}
 	case *ecdsaPublicKey:
 		kk := k.(*ecdsaPublicKey)
 
@@ -172,7 +180,13 @@ func (ks *fileBasedKeyStore) StoreKey(k bccsp.Key) (err error) {
 		if err != nil {
 			return fmt.Errorf("Failed storing ECDSA public key [%s]", err)
 		}
+	case *smPublicKey:
+		kk := k.(*smPublicKey)
 
+		err = ks.storePublicKey(hex.EncodeToString(k.SKI()), kk.pubKey)
+		if err != nil {
+			return fmt.Errorf("Failed storing ECDSA public key [%s]", err)
+		}
 	case *rsaPrivateKey:
 		kk := k.(*rsaPrivateKey)
 
@@ -265,6 +279,7 @@ func (ks *fileBasedKeyStore) getSuffix(alias string) string {
 }
 
 func (ks *fileBasedKeyStore) storePrivateKey(alias string, privateKey interface{}) error {
+	//fmt.Println("SKi:",alias)
 	rawKey, err := utils.PrivateKeyToPEM(privateKey, ks.pwd)
 
 	if err != nil {
@@ -323,9 +338,16 @@ func (ks *fileBasedKeyStore) loadPrivateKey(alias string) (interface{}, error) {
 
 	privateKey, err := utils.PEMtoPrivateKey(raw, ks.pwd)
 	if err != nil {
-		logger.Error("Failed parsing private key [%s]: [%s].", alias, err.Error())
 
-		return nil, err
+		smk, err := sm2.ReadPrivateKeyFromMem(raw, ks.pwd)
+		if err != nil {
+			logger.Error("Failed parsing private key [%s]: [%s].", alias, err.Error())
+
+			return nil, err
+		}
+
+		return smk, nil
+
 	}
 
 	return privateKey, nil

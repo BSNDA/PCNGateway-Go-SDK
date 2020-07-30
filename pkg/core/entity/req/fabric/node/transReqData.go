@@ -2,7 +2,7 @@ package node
 
 import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans/fabric"
 )
 
 type TransReqData struct {
@@ -41,8 +41,8 @@ func (f *TransReqData) GetEncryptionValue() string {
 
 }
 
-func (t *TransReqDataBody) GetTransRequest(channelId string) *trans.TransRequest {
-	request := &trans.TransRequest{
+func (t *TransReqDataBody) GetTransRequest(channelId string) *fabric.TransRequest {
+	request := &fabric.TransRequest{
 		ChannelId:   channelId,
 		ChaincodeId: t.ChainCode,
 		Fcn:         t.FuncName,

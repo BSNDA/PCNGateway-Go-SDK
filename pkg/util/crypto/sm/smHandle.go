@@ -58,6 +58,16 @@ func NewSM2Handle(pub, pri string) (*sm2Handle, error) {
 	return ecdsa, nil
 }
 
+func NewTransUserSMHandle(priKey *sm2.PrivateKey) *sm2Handle {
+
+	ecdsa := &sm2Handle{
+		pubKey: &priKey.PublicKey,
+		priKey: priKey,
+	}
+
+	return ecdsa
+}
+
 type sm2Handle struct {
 	pubKey *sm2.PublicKey
 	priKey *sm2.PrivateKey

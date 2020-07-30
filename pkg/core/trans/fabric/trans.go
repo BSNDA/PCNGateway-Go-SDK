@@ -6,7 +6,6 @@ import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/esdsa"
 	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/protos/common"
 	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/protos/peer"
@@ -92,9 +91,9 @@ func signProposal(proposal *pb.Proposal, user *msp.UserData) (*pb.SignedProposal
 		return nil, errors.New("mashal proposal failed")
 	}
 
-	digest, err := crypto.GetHash(proposalBytes)
+	//digest, err := crypto.GetHash(proposalBytes)
 
-	signature, err := ecdsa.SignECDSA(user.PrivateKey, digest)
+	signature, err := user.Sign(proposalBytes) // secp256r1.SignECDSA(user.PrivateKey, digest)
 
 	return &pb.SignedProposal{ProposalBytes: proposalBytes, Signature: signature}, nil
 

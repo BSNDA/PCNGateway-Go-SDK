@@ -12,7 +12,7 @@ import (
 
 func TestFabricClient_SdkTran(t *testing.T) {
 
-	config, err := config2.NewMockConfig()
+	config, err := config2.NewFabricSMTrustConfig()
 
 	if err != nil {
 		t.Fatal(err.Error())
@@ -24,14 +24,14 @@ func TestFabricClient_SdkTran(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 
-	name := ""
+	name := "user05"
 
 	var args []string
-	args = append(args, "{\"baseKey\":\"test20200406\",\"baseValue\":\"this is string \"}")
+	args = append(args, "{\"baseKey\":\"test20200407\",\"baseValue\":\"this is string \"}")
 
 	body := req.TransReqDataBody{
 		UserName:     name,
-		ChainCode:    "cc_base",
+		ChainCode:    "cc_app0001202007271538152051987_01",
 		FuncName:     "set",
 		Args:         args,
 		TransientMap: make(map[string]string),
@@ -43,11 +43,14 @@ func TestFabricClient_SdkTran(t *testing.T) {
 	}
 	fmt.Println(res)
 
+	v := fabricClient.Verify(res.Mac, res.GetEncryptionValue())
+	fmt.Println(v)
+
 }
 
 func TestFabricClient_ReqChainCode(t *testing.T) {
 
-	config, err := config2.NewMockConfig()
+	config, err := config2.NewFabricSMNoTrustConfig()
 
 	if err != nil {
 		t.Fatal(err.Error())
@@ -61,17 +64,17 @@ func TestFabricClient_ReqChainCode(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 
-	name := "user01"
+	name := ""
 
 	var args []string
-	args = append(args, "{\"baseKey\":\"test2020066\",\"baseValue\":\"this is string \"}")
+	args = append(args, "{\"baseKey\":\"test2020069\",\"baseValue\":\"this is string \"}")
 
 	nonce, _ := crypto.GetRandomNonce()
 
 	body := req.TransReqDataBody{
 		UserName:     name,
 		Nonce:        base64.StdEncoding.EncodeToString(nonce),
-		ChainCode:    "cc_base",
+		ChainCode:    "cc_app0001202007291443281737652_01",
 		FuncName:     "set",
 		Args:         args,
 		TransientMap: make(map[string]string),
@@ -84,7 +87,7 @@ func TestFabricClient_ReqChainCode(t *testing.T) {
 }
 
 func TestFabricClient_GetTransInfo(t *testing.T) {
-	config, err := config2.NewMockConfig()
+	config, err := config2.NewFabricSMNoTrustConfig()
 
 	if err != nil {
 		t.Fatal(err.Error())
@@ -97,7 +100,7 @@ func TestFabricClient_GetTransInfo(t *testing.T) {
 	}
 
 	tx := req.TxTransReqDataBody{
-		TxId: "255cf25cc7ed1ef94a2c23e7d52747426f193470a2f716ba36c93d17323e6272",
+		TxId: "d74808fa0c355e85aeb6e6f5289dca4295f30343dd1bed35a67eef776624d7d4",
 	}
 
 	res, _ := fabricClient.GetTransInfo(tx)
@@ -113,7 +116,7 @@ func TestFabricClient_GetTransInfo(t *testing.T) {
 
 func TestFabricClient_GetBlockInfo(t *testing.T) {
 
-	config, err := config2.NewMockConfig()
+	config, err := config2.NewFabricSMTrustConfig()
 
 	if err != nil {
 		t.Fatal(err.Error())
@@ -126,7 +129,8 @@ func TestFabricClient_GetBlockInfo(t *testing.T) {
 	}
 
 	tx := req.BlockReqDataBody{
-		BlockHash: "d04fdb12073abfee4f3ee45472468a1cf0434e74d6342671a8c43b713f6a5e92",
+
+		BlockHash: "b340b4d2cd2f8e9e905f5ea14a6495aa0a1834fb68d08cd37283e9dcd9304379",
 	}
 
 	res, _ := fabricClient.GetBlockInfo(tx)
@@ -140,7 +144,7 @@ func TestFabricClient_GetBlockInfo(t *testing.T) {
 
 func TestFabricClient_GetLedgerInfo(t *testing.T) {
 
-	config, err := config2.NewMockConfig()
+	config, err := config2.NewFabricSMTrustConfig()
 
 	if err != nil {
 		t.Fatal(err.Error())

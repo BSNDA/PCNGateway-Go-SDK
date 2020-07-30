@@ -55,6 +55,16 @@ func NewEcdsaR1Handle(pub, pri string) (*ecdsaHandle, error) {
 	return ecdsa, nil
 }
 
+func NewTransUserR1Handle(priKey *ecdsa.PrivateKey) *ecdsaHandle {
+
+	ecdsa := &ecdsaHandle{
+		pubKey: &priKey.PublicKey,
+		priKey: priKey,
+	}
+
+	return ecdsa
+}
+
 type ecdsaHandle struct {
 	pubKey *ecdsa.PublicKey
 	priKey *ecdsa.PrivateKey

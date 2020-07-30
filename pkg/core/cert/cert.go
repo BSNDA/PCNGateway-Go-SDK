@@ -26,7 +26,10 @@ func GetCSRPEM(name string, algorithmType enum.App_AlgorithmType, ks bccsp.KeySt
 	cr := &csr.CertificateRequest{}
 	cr.CN = name
 	cr.KeyRequest = newCfsslBasicKeyRequest()
-
+	cr.Names = append(cr.Names, csr.Name{
+		OU: "client",
+		O:  "Bsn",
+	})
 	var keyOpts bccsp.KeyGenOpts
 	keyOpts = &keystore.ECDSAP256KeyGenOpts{Temporary: true}
 

@@ -1,6 +1,7 @@
 package fabric
 
 import (
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	userreq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/user"
 	userres "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/fabric/user"
 
@@ -14,7 +15,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/cloudflare/cfssl/csr"
 	"github.com/wonderivan/logger"
 )
 
@@ -57,22 +57,13 @@ func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) error {
 		Secret: body.Secret,
 	}
 
-	cr := cert.GetCertificateRequest(c.GetCertName(enrollBody.Name))
-
-	key, cspSigner, err := keystore.BCCSPKeyRequestGenerate(c.Ks)
-
+	csr, key, err := cert.GetCSRPEM(c.GetCertName(enrollBody.Name), c.Config.GetAppInfo().AlgorithmType, c.Ks)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
 
-	csrPEM, err := csr.Generate(cspSigner, cr)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	enrollBody.CsrPem = string(csrPEM)
+	enrollBody.CsrPem = csr
 
 	res, err := c.enroll(enrollBody)
 
@@ -82,7 +73,12 @@ func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) error {
 
 	if res.Header.Code == base.Header_success_code {
 
-		pk := keystore.GetECDSAPrivateKey(key)
+		var pk interface{}
+		if c.Config.GetAppInfo().AlgorithmType == enum.AppAlgorithmType_SM2 {
+			pk = keystore.GetSmPrivateKey(key)
+		} else {
+			pk = keystore.GetECDSAPrivateKey(key)
+		}
 		user := &msp.UserData{
 			UserName:              enrollBody.Name,
 			AppCode:               c.Config.GetAppInfo().AppCode,

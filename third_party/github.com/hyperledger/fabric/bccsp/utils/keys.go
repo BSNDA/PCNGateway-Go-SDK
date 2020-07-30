@@ -30,6 +30,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"github.com/tjfoc/gmsm/sm2"
 )
 
 // struct to hold info required for PKCS#8
@@ -134,6 +135,9 @@ func PrivateKeyToPEM(privateKey interface{}, pwd []byte) ([]byte, error) {
 				Bytes: pkcs8Bytes,
 			},
 		), nil
+	case *sm2.PrivateKey:
+		return sm2.WritePrivateKeytoMem(privateKey.(*sm2.PrivateKey), pwd)
+
 	case *rsa.PrivateKey:
 		if k == nil {
 			return nil, errors.New("Invalid rsa private key. It must be different from nil.")

@@ -106,3 +106,12 @@ func (k *smPublicKey) Private() bool {
 func (k *smPublicKey) PublicKey() (bccsp.Key, error) {
 	return k, nil
 }
+
+func GetSmPrivateKey(key bccsp.Key) *sm2.PrivateKey {
+	prk, ok := key.(*smPrivateKey)
+	if ok {
+		return prk.privKey
+	} else {
+		return nil
+	}
+}
