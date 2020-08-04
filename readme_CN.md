@@ -3,6 +3,35 @@
 
 ## Go语言SDK
 
+## 框架及秘钥支持
+
+> Go语言SDK目前支持官网所有的框架和秘钥组合应用的调用
+
+具体如下：
+<escape>
+<table >
+<tr>
+<th rowspan="2">框架</th><th colspan="3">秘钥上传</th><th colspan="3">秘钥托管</th>
+</tr>
+<tr>
+<th>secp256r1</th><th>secp256k1</th><th>SM2</th><th>secp256r1</th><th>secp256k1</th><th>SM2</th>
+</tr>
+<tr>
+<td>Fabric</td><td>支持</td><td></td><td>支持</td><td>支持</td><td></td><td>支持</td>
+</tr>
+<tr>
+<td>FISCO-BCOS</td><td></td><td>支持</td><td>支持</td><td></td><td>支持</td><td>支持</td>
+</tr>
+<tr>
+<td>XuperChain</td><td></td><td></td><td></td><td></td><td></td><td>支持</td>
+</tr>
+</table>
+</escape>
+
+* fabric框架应用使用secp256r1、SM2 秘钥的秘钥托管和秘钥上传两种模式;
+* FISCO-BCOS框架应用使用secp256k1、SM2 秘钥的秘钥托管和秘钥上传两种模式;
+* XuperChain框架应用仅支持SM2秘钥的秘钥托管模式；
+
 ### 1. 调用前准备
 
 #### 应用参数
@@ -20,13 +49,28 @@
 ### 2. 准备调用
 
 #### 导入sdk包
-需要引入下面的包
+Fabric 需要引入下面的包
 ```
 import (
     "github.com/BSNDA/PCNGateway-Go-SDK/pkg/client/fabric"
     "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/config"
 	)
 ```
+FISCO-BCOS 需要引入下面的包
+```
+import (
+    "github.com/BSNDA/PCNGateway-Go-SDK/pkg/client/fisco-bcos"
+    "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/config"
+	)
+```
+XuperChain 需要引入下面的包
+```
+import (
+    "github.com/BSNDA/PCNGateway-Go-SDK/pkg/client/xuperchain"
+    "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/config"
+	)
+```
+
 #### 初始化config
 可以初始化一个存储所有配置的对象，这些具体的配置信息应当由调用者根据各自的项目配置或者读取之后，在调用时传入，
 在config的`Init`方法中实现了获取一个App基础信息的操作，该操作请不要频繁的调用，该接口将占用您的TPS和流量，可以在项目使用一个静态对象存储`config`在需要时使用。
@@ -46,8 +90,11 @@ import (
 ```
 #### 初始化Client
 使用已经生成的配置对象，调用以下代码可以创建一个Client对象，用来调用节点网关
+
 ```
 	client,err :=fabric.InitFabricClient(config)
+	//client,err :=fisco_bcos.NewFiscoBcosClient(config) //FISCO-BCOS Client
+	//client,err :=xuperchain.NewXuperChainClient(config) //XuperChain Client
 	if err !=nil{
 	    log.Fatal(err)
 	}
@@ -75,10 +122,11 @@ import (
 ### 3.一些其他说明
 
 #### 非托管应用的用户身份证书的说明
-由于非托管的应用在调用网关进行交易的时候所需要的用户证书需要用户自己生成，其流程是：注册用户->登记用户证书 。在登记用户证书的操作中，会由本地生成一对秘钥，然后通过秘钥导出证书的CSR文件（证书申请文件），调用用户证书
+由于`Fabric`框架的非托管的应用在调用网关进行交易的时候所需要的用户证书需要用户自己生成，其流程是：注册用户->登记用户证书 。在登记用户证书的操作中，会由本地生成一对秘钥，然后通过秘钥导出证书的CSR文件（证书申请文件），调用用户证书
 登记接口获取一个有效的证书，使用该证书才能在通过托管应用交易处理接口中正常的发起交易。
 需要注意的是在CSR文件中设置CN时，并不直接是注册的Name，而是由Name和AppCode拼接的名称，格式为`Name@AppCode` 。
-该操作是在 `FabricClient`的`EnrollUser`方法中实现的。
+该操作是在 `FabricClient`的`EnrollUser`方法中实现的。  
+而`FISCO-BCOS`框架的非托管应用在进行交易时只需要在本地生成一对符合框架算法的密钥对即可，无需其他操作。
 
 __证书的存储__ 是通过 `util`中的`keystore`和`userstore`实现的，该方法只存储本地文件形式的证书，如果需要其
 他形式的证书存储方式。是需要实现具体的接口即可，详细请参考具体的代码。
@@ -156,7 +204,27 @@ __`key.pem`__ :私钥
 __`pub.pem`__ :公钥
 __`key_pkcs8.pem`__ :pkcs8格式私钥
 
-##### 2.`SM2`格式秘钥生成
+##### 2. ECDSA(secp256k1)的密钥生成
+- 生成私钥
+```
+openssl ecparam -name secp256k1 -genkey -out key.pem
+```
+- 导出公钥
+```
+openssl ec -in key.pem -pubout -out pub.pem
+```
+- 导出pkcs8格式私钥
+> 由于部分语言中使用pkcs8格式的密钥比较方便，可以使用下面的命令导出pkcs8格式私钥
+> 在本sdk中使用的私钥即为pkcs8格式
+```
+openssl pkcs8 -topk8 -inform PEM -in key.pem -outform PEM -nocrypt -out key_pkcs8.pem
+```
+通过以上命令可以生成三个文件
+__`key.pem`__ :私钥
+__`pub.pem`__ :公钥
+__`key_pkcs8.pem`__ :pkcs8格式私钥
+
+##### 3.`SM2`格式秘钥生成
 首先需要检查`openssl`的版本是否支持`SM2`格式秘钥生成，可以使用下面的命令
 ```
 openssl ecparam -list_curves | grep SM2
