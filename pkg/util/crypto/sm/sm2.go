@@ -1,11 +1,3 @@
-/**
- * @Author: Gao Chenxi
- * @Description:
- * @File:  sm2
- * @Version: 1.0.0
- * @Date: 2020/7/24 16:10
- */
-
 package sm
 
 import (

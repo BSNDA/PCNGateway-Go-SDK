@@ -22,7 +22,7 @@ func TestFabricClient_RegisterUser(t *testing.T) {
 	}
 
 	body := req.RegisterReqDataBody{
-		Name:   "user06",
+		Name:   "user0731",
 		Secret: "123456",
 	}
 
@@ -52,7 +52,7 @@ func TestFabricClient_EnrollUser(t *testing.T) {
 	}
 
 	body := req.RegisterReqDataBody{
-		Name:   "user01",
+		Name:   "user0731",
 		Secret: "123456",
 	}
 

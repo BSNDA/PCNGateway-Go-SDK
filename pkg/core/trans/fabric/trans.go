@@ -7,11 +7,11 @@ import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto"
 	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
-	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/protos/common"
-	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/protos/peer"
-	pb "github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/protos/peer"
 	protos_utils "github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/protos/utils"
 	"github.com/golang/protobuf/proto"
+	"github.com/hyperledger/fabric-protos-go/common"
+	"github.com/hyperledger/fabric-protos-go/peer"
+	pb "github.com/hyperledger/fabric-protos-go/peer"
 )
 
 func CreateRequest(user *msp.UserData, request *TransRequest) (data string, txId string, err error) {

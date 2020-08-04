@@ -71,12 +71,12 @@ func GetCertificateRequest(name string) *csr.CertificateRequest {
 
 }
 
-func newCfsslBasicKeyRequest() *csr.BasicKeyRequest {
-	return &csr.BasicKeyRequest{A: "ecdsa", S: 256}
+func newCfsslBasicKeyRequest() *csr.KeyRequest {
+	return &csr.KeyRequest{A: "ecdsa", S: 256}
 }
 
-func newSm2BasicKeyRequest() *csr.BasicKeyRequest {
-	return &csr.BasicKeyRequest{A: "sm2", S: 256}
+func newSm2BasicKeyRequest() *csr.KeyRequest {
+	return &csr.KeyRequest{A: "sm2", S: 256}
 }
 
 func NewUser(userType enum.App_AlgorithmType) (interface{}, []byte, error) {

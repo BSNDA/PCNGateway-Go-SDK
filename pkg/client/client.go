@@ -70,6 +70,9 @@ func (c *Client) Sign(data string) string {
 }
 
 func (c *Client) Verify(mac, data string) bool {
+	if mac == "" {
+		return true
+	}
 	return c.sign.Verify(mac, data)
 
 }

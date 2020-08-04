@@ -1,11 +1,3 @@
-/**
- * @Author: Gao Chenxi
- * @Description:
- * @File:  ecdsaHandle
- * @Version: 1.0.0
- * @Date: 2020/7/24 10:43
- */
-
 package secp256r1
 
 import (

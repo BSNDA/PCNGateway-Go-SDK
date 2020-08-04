@@ -1,11 +1,3 @@
-/**
- * @Author: Gao Chenxi
- * @Description:
- * @File:  smHandle_test
- * @Version: 1.0.0
- * @Date: 2020/7/24 10:52
- */
-
 package sm
 
 import (

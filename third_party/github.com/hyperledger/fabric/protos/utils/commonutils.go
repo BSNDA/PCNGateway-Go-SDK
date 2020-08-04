@@ -14,9 +14,9 @@ import (
 	"fmt"
 	"time"
 
-	cb "github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/protos/common"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/timestamp"
+	cb "github.com/hyperledger/fabric-protos-go/common"
 	"github.com/pkg/errors"
 )
 

@@ -3,13 +3,14 @@ package fabric
 import (
 	"encoding/base64"
 	"fmt"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/keystore"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/userstore"
 	"github.com/golang/protobuf/proto"
 	"testing"
 
-	pb "github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/protos/peer"
+	pb "github.com/hyperledger/fabric-protos-go/peer"
 )
 
 func TestGetRequestData(t *testing.T) {
@@ -24,7 +25,7 @@ func TestGetRequestData(t *testing.T) {
 
 	us.Load(user)
 
-	keystore.LoadKey(user, ks)
+	keystore.LoadKey(user, ks, enum.AppAlgorithmType_SM2)
 
 	var args [][]byte
 	args = append(args, []byte("{\"baseKey\":\"test20200409\",\"baseValue\":\"this is string \"}"))

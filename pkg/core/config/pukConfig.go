@@ -1,11 +1,3 @@
-/**
- * @Author: Gao Chenxi
- * @Description:
- * @File:  pukConfig
- * @Version: 1.0.0
- * @Date: 2020/7/28 11:34
- */
-
 package config
 
 const (

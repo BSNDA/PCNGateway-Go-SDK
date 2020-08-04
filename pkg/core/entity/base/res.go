@@ -18,6 +18,10 @@ type BaseResModel struct {
 	Mac string `json:"mac"` // mac
 }
 
+func (b *BaseResModel) GetMac() string {
+	return b.Mac
+}
+
 func (b *BaseResModel) GetBaseEncryptionValue() string {
 
 	return strconv.Itoa(b.Header.Code) + b.Header.Msg
