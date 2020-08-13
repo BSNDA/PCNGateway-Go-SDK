@@ -15,9 +15,10 @@ func SendPost(dataBytes []byte, url string, cert string) ([]byte, error) {
 
 	var client *http.Client
 
-	isHttps := strings.Contains(url, "https://")
+	isHttps := false //strings.Contains(url, "https://")
 
 	if isHttps {
+
 		logger.Debug("cert:", cert)
 		if cert == "" {
 			return nil, errors.New("HTTPS certificate not set")
@@ -29,7 +30,7 @@ func SendPost(dataBytes []byte, url string, cert string) ([]byte, error) {
 		//	return nil, err
 		//}
 		//read the content of http cert
-		caCert, err := ioutil.ReadFile(cert)
+		caCert, err := readCaCert(cert) // ioutil.ReadFile(cert)
 		if err != nil {
 			logger.Error("read HTTPS certificate content failed：", err.Error())
 			return nil, err
@@ -57,6 +58,7 @@ func SendPost(dataBytes []byte, url string, cert string) ([]byte, error) {
 			Transport: tr,
 		}
 	}
+
 	//invoke interface
 	logger.Debug("request message：", string(dataBytes))
 	response, err := client.Post(url, "application/json", bytes.NewReader(dataBytes))
@@ -81,4 +83,14 @@ func SendPost(dataBytes []byte, url string, cert string) ([]byte, error) {
 	response.Body.Close()
 	logger.Debug("response message：", string(allBytes))
 	return allBytes, nil
+}
+
+func readCaCert(cert string) ([]byte, error) {
+	isFile := strings.Contains(cert, ".crt")
+	if isFile {
+		return ioutil.ReadFile(cert)
+	} else {
+		return []byte(cert), nil
+	}
+
 }
