@@ -10,7 +10,8 @@ type RegisterUserResData struct {
 }
 
 type RegisterUserResDataBody struct {
-	AccAddr string
+	UserId   string `json:"userId"`
+	UserAddr string `json:"userAddr"`
 }
 
 func (f *RegisterUserResData) GetEncryptionValue() string {
@@ -19,6 +20,6 @@ func (f *RegisterUserResData) GetEncryptionValue() string {
 	}
 	fp := f.GetBaseEncryptionValue()
 
-	fp = fp + f.Body.AccAddr
+	fp = fp + f.Body.UserId + f.Body.UserAddr
 	return fp
 }
