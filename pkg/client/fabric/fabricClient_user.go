@@ -1,9 +1,14 @@
 package fabric
 
 import (
+	"crypto/ecdsa"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	userreq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/user"
 	userres "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/fabric/user"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/sign"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/secp256r1"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/sm"
+	"github.com/tjfoc/gmsm/sm2"
 
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/cert"
@@ -74,10 +79,15 @@ func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) error {
 	if res.Header.Code == base.Header_success_code {
 
 		var pk interface{}
+		var sh sign.SignHandle
+
 		if c.Config.GetAppInfo().AlgorithmType == enum.AppAlgorithmType_SM2 {
 			pk = keystore.GetSmPrivateKey(key)
+			sh = sm.NewTransUserSMHandle(pk.(*sm2.PrivateKey))
+
 		} else {
 			pk = keystore.GetECDSAPrivateKey(key)
+			sh = secp256r1.NewTransUserR1Handle(pk.(*ecdsa.PrivateKey))
 		}
 		user := &msp.UserData{
 			UserName:              enrollBody.Name,
@@ -86,6 +96,8 @@ func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) error {
 			EnrollmentCertificate: []byte(res.Body.Cert),
 			PrivateKey:            pk,
 		}
+		user.SetSignHandle(sh)
+
 		c.Us.Store(user)
 		c.Users[user.UserName] = user
 	} else {
