@@ -48,9 +48,9 @@ func (c *FabricClient) RegisterUser(body userreq.RegisterReqDataBody) (*userres.
 		logger.Error("return parameter serialization failed：", err)
 		return nil, err
 	}
-	if !c.Verify(res.Mac, res.GetEncryptionValue()) {
-		return nil, errors.New("sign has error")
-	}
+	//if !c.Verify(res.Mac, res.GetEncryptionValue()) {
+	//	return nil, errors.New("sign has error")
+	//}
 
 	return res, nil
 }
