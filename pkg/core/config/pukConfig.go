@@ -1,5 +1,7 @@
 package config
 
+import "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
+
 const (
 	PubK_SM = `-----BEGIN PUBLIC KEY-----
 MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEIlh1C0iWAdcKnM/yAaZZT/42NVzT
@@ -59,3 +61,16 @@ MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEh4WlY4pCv814i3WY5aRhtR3PoiIXOM1I
 5xBGylyQTedo6DzJUdLfYZSZLs4py70D8FJtNICMVQCfezA7whHzUw==
 -----END PUBLIC KEY-----`
 )
+
+func getGatewayPublicKey(algorithmType enum.App_AlgorithmType) string {
+	switch algorithmType {
+	case enum.AppAlgorithmType_SM2:
+		return PubK_SM
+	case enum.AppAlgorithmType_R1:
+		return PubK_R1
+	case enum.AppAlgorithmType_K1:
+		return Pubk_K1
+	}
+
+	return ""
+}

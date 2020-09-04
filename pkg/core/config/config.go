@@ -30,8 +30,23 @@ func NewConfig(api, userCode, appCode, puk, prk, mspDir, cert string) (*Config, 
 		user:     userInfo{UserCode: userCode},
 		app:      appInfo{AppCode: appCode},
 	}
-	config.Init()
-	return config, nil
+	err := config.Init()
+	return config, err
+}
+
+//Create a profile information
+func NewConfig2(api, userCode, appCode, prk, mspDir string) (*Config, error) {
+
+	config := &Config{
+		nodeApi:  api,
+		mspDir:   mspDir,
+		httpCert: "",
+		appCert:  certInfo{AppPublicCert: "", UserAppPrivateCert: prk},
+		user:     userInfo{UserCode: userCode},
+		app:      appInfo{AppCode: appCode},
+	}
+	err := config.Init()
+	return config, err
 }
 
 type Config struct {
@@ -104,6 +119,14 @@ func (c *Config) Init() error {
 
 		c.app.CAType = enum.App_CaType(res.Body.CaType)
 		c.app.AlgorithmType = enum.App_AlgorithmType(res.Body.AlgorithmType)
+
+		if c.appCert.AppPublicCert == "" {
+			c.appCert.AppPublicCert = getGatewayPublicKey(c.app.AlgorithmType)
+		}
+
+		if c.appCert.AppPublicCert == "" {
+			return errors.New("gateway public key not setting")
+		}
 
 		c.app.MspId = res.Body.MspId
 
