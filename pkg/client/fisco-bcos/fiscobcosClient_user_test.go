@@ -7,10 +7,10 @@ import (
 
 func TestFiscoBcosClient_RegisterUser(t *testing.T) {
 
-	fiscoClient := getK1Client(t)
+	fiscoClient := getSMClient(t)
 
 	body := req.RegisterReqDataBody{
-		UserId: "test0623",
+		UserId: "test0927",
 	}
 
 	res, err := fiscoClient.RegisterUser(body)

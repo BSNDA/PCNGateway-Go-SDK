@@ -35,6 +35,10 @@ func NewConfig(api, userCode, appCode, puk, prk, mspDir, cert string) (*Config, 
 }
 
 //Create a profile information
+// api: address of the node gateway
+// userCode: user's code
+// appCode: DApp code
+// prk : private key of DApp cert
 func NewConfig2(api, userCode, appCode, prk, mspDir string) (*Config, error) {
 
 	config := &Config{
@@ -131,6 +135,7 @@ func (c *Config) Init() error {
 		c.app.MspId = res.Body.MspId
 
 		c.app.ChannelId = res.Body.ChannelId
+
 		c.isInit = true
 	}
 
@@ -140,6 +145,8 @@ func (c *Config) Init() error {
 type certInfo struct {
 	//public key cert of DApp
 	AppPublicCert string
+
+	autoPublicKey bool
 
 	//Private key cert of user
 	UserAppPrivateCert string

@@ -2,27 +2,15 @@ package fabric
 
 import (
 	"fmt"
-	config2 "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/config"
 	req "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/user"
 	"testing"
 )
 
 func TestFabricClient_RegisterUser(t *testing.T) {
 
-	config, err := config2.NewFabricSMTrustConfig()
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-
-	fabricClient, err := InitFabricClient(config)
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-
+	fabricClient := getFabricClient(t)
 	body := req.RegisterReqDataBody{
-		Name:   "user0731",
+		Name:   "user0732",
 		Secret: "123456",
 	}
 
@@ -39,20 +27,10 @@ func TestFabricClient_RegisterUser(t *testing.T) {
 
 func TestFabricClient_EnrollUser(t *testing.T) {
 
-	config, err := config2.NewFabricSMTrustConfig()
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-
-	fabricClient, err := InitFabricClient(config)
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	fabricClient := getFabricClient(t)
 
 	body := req.RegisterReqDataBody{
-		Name:   "user0731",
+		Name:   "user0732",
 		Secret: "123456",
 	}
 
@@ -64,17 +42,7 @@ func TestFabricClient_EnrollUser(t *testing.T) {
 }
 
 func TestFabricClient_LoadUser(t *testing.T) {
-	config, err := config2.NewMockConfig()
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-
-	fabricClient, err := InitFabricClient(config)
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	fabricClient := getFabricClient(t)
 
 	fmt.Println(*fabricClient.Users["abcde"])
 }

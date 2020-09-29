@@ -10,28 +10,38 @@ import (
 	"time"
 )
 
-func TestFabricClient_SdkTran(t *testing.T) {
+func getFabricClient(t *testing.T) *FabricClient {
 
-	config, err := config2.NewFabricSMTrustConfig()
+	//if call test net
+	//Uncomment code
+	//config2.SetTest()
+
+	config, err := config2.NewMockFabricConfig()
 
 	if err != nil {
-		t.Fatal(err.Error())
+		t.Fatal(err)
 	}
-
+	//fmt.Println("cert", config.GetCert())
 	fabricClient, err := InitFabricClient(config)
 
 	if err != nil {
-		t.Fatal(err.Error())
+		t.Fatal(err)
 	}
+	return fabricClient
+}
 
-	name := "user0731"
+func TestFabricClient_SdkTran(t *testing.T) {
+
+	fabricClient := getFabricClient(t)
+
+	name := "testuser3"
 
 	var args []string
-	args = append(args, "{\"baseKey\":\"test20200423\",\"baseValue\":\"this is string \"}")
+	args = append(args, "{\"baseKey\":\"test20200456\",\"baseValue\":\"this is string \"}")
 
 	body := req.TransReqDataBody{
 		UserName:     name,
-		ChainCode:    "cc_app0001202007302150221237627_01",
+		ChainCode:    "cc_99613acedfe94e879252f25a50f5bb27",
 		FuncName:     "set",
 		Args:         args,
 		TransientMap: make(map[string]string),
@@ -44,37 +54,26 @@ func TestFabricClient_SdkTran(t *testing.T) {
 	fmt.Println(res)
 
 	v := fabricClient.Verify(res.Mac, res.GetEncryptionValue())
-	fmt.Println(v)
+	fmt.Println("网关签名验证：", v)
 
 }
 
 func TestFabricClient_ReqChainCode(t *testing.T) {
 
-	config, err := config2.NewFabricSMTrustConfig()
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-
-	fmt.Println("cert", config.GetCert())
-
-	fabricClient, err := InitFabricClient(config)
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	fabricClient := getFabricClient(t)
 
 	name := ""
 
 	var args []string
-	args = append(args, "{\"baseKey\":\"test2020100\",\"baseValue\":\"this is string \"}")
+	//args = append(args, "test2020104")
+	args = append(args, "{\"baseKey\":\"test2020105\",\"baseValue\":\"this is string \"}")
 
 	nonce, _ := crypto.GetRandomNonce()
 
 	body := req.TransReqDataBody{
 		UserName:     name,
 		Nonce:        base64.StdEncoding.EncodeToString(nonce),
-		ChainCode:    "cc_app0001202007310152164084640_01",
+		ChainCode:    "cc_99613acedfe94e879252f25a50f5bb27",
 		FuncName:     "set",
 		Args:         args,
 		TransientMap: make(map[string]string),
@@ -90,20 +89,10 @@ func TestFabricClient_ReqChainCode(t *testing.T) {
 }
 
 func TestFabricClient_GetTransInfo(t *testing.T) {
-	config, err := config2.NewFabricSMTrustConfig()
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-
-	fabricClient, err := InitFabricClient(config)
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	fabricClient := getFabricClient(t)
 
 	tx := req.TxTransReqDataBody{
-		TxId: "391b5fd1e83e272c4a5593616e3f9b191de806a47ddd6d6049fdc6d79e1e977c",
+		TxId: "9092ccfe3af254f5afc4b0aba770f521c1357ea8e47e97757a0eca7da047cb94",
 	}
 
 	res, _ := fabricClient.GetTransInfo(tx)
@@ -119,17 +108,7 @@ func TestFabricClient_GetTransInfo(t *testing.T) {
 
 func TestFabricClient_GetBlockInfo(t *testing.T) {
 
-	config, err := config2.NewFabricSMTrustConfig()
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-
-	fabricClient, err := InitFabricClient(config)
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	fabricClient := getFabricClient(t)
 
 	tx := req.BlockReqDataBody{
 
@@ -147,19 +126,10 @@ func TestFabricClient_GetBlockInfo(t *testing.T) {
 
 func TestFabricClient_GetLedgerInfo(t *testing.T) {
 
-	config, err := config2.NewFabricSMTrustConfig()
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-
-	fabricClient, err := InitFabricClient(config)
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	fabricClient := getFabricClient(t)
 
 	res, _ := fabricClient.GetLedgerInfo()
 
 	fmt.Println(res)
+	fmt.Println(fabricClient.Verify(res.Mac, res.GetEncryptionValue()))
 }

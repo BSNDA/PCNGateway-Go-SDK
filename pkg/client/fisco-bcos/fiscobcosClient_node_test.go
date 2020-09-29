@@ -10,7 +10,7 @@ import (
 )
 
 func getClient(t *testing.T) *FiscoBcosClient {
-	config, err := config.NewMockT1FiscoConfig()
+	config, err := config.NewMockFiscoConfig()
 
 	if err != nil {
 		t.Fatal(err)
@@ -27,7 +27,7 @@ func getClient(t *testing.T) *FiscoBcosClient {
 }
 
 func getK1Client(t *testing.T) *FiscoBcosClient {
-	config, err := config.NewMockTestFiscoK1Config()
+	config, err := config.NewMockFiscoConfig()
 
 	if err != nil {
 		t.Fatal(err)
@@ -44,7 +44,7 @@ func getK1Client(t *testing.T) *FiscoBcosClient {
 }
 
 func getSMClient(t *testing.T) *FiscoBcosClient {
-	config, err := config.NewMockTestFiscoSMConfig()
+	config, err := config.NewMockFiscoConfig()
 
 	if err != nil {
 		t.Fatal(err)
@@ -64,19 +64,19 @@ func TestFiscoBcosClient_ReqChainCode_insert(t *testing.T) {
 
 	fiscoClient := getSMClient(t)
 
-	name := "test0623"
+	name := "test0927"
 
 	var args []interface{}
 	args = append(args, "s0604")
-	//args = append(args, 12)
-	//args = append(args, "aa")
+	args = append(args, 12)
+	args = append(args, "aa")
 
 	jb, _ := json.Marshal(args)
 
 	body := nodereq.TransReqDataBody{
 		UserId:       name,
 		ContractName: "BsnBaseContract",
-		FuncName:     "select",
+		FuncName:     "insert",
 		FuncParam:    string(jb),
 	}
 
@@ -92,19 +92,19 @@ func TestFiscoBcosClient_ReqChainCode_insertk1(t *testing.T) {
 
 	fiscoClient := getK1Client(t)
 
-	name := "test0611"
+	name := "test0623"
 
 	var args []interface{}
 	args = append(args, "s0605")
-	args = append(args, 12)
-	args = append(args, "aa")
+	//args = append(args, 12)
+	//args = append(args, "aa")
 
 	jb, _ := json.Marshal(args)
 
 	body := nodereq.TransReqDataBody{
 		UserId:       name,
-		ContractName: "BsnBaseContractk1",
-		FuncName:     "insert",
+		ContractName: "BsnBaseGlobalContract",
+		FuncName:     "select",
 		FuncParam:    string(jb),
 	}
 
@@ -186,7 +186,7 @@ func TestFiscoBcosClient_GetBlockInfo(t *testing.T) {
 }
 
 func TestFiscoBcosClient_GetBlockHeight(t *testing.T) {
-	fiscoClient := getClient(t)
+	fiscoClient := getSMClient(t)
 
 	res, err := fiscoClient.GetBlockHeight()
 
@@ -195,6 +195,7 @@ func TestFiscoBcosClient_GetBlockHeight(t *testing.T) {
 	}
 
 	fmt.Println(res.Body.Data)
+	fmt.Println(fiscoClient.Verify(res.Mac, res.GetEncryptionValue()))
 }
 
 func TestFiscoBcosClient_GetTxCount(t *testing.T) {
@@ -261,8 +262,8 @@ func TestFiscoBcosClient_Trans(t *testing.T) {
 	body := nodereq.TransData{
 		UserName: name,
 		Contract: nodereq.ContractData{
-			ContractName:    "BsnBaseContractk1",
-			ContractAddress: "0x866aefc204b8f8fdc3e45b908fd43d76667d7f76",
+			ContractName:    "BsnBaseGlobalContract",
+			ContractAddress: "0x5cc4d9d4945d8dd2eb371fb39b9d09b17eea70ff",
 			ContractAbi:     `[{"constant":false,"inputs":[{"name":"base_id","type":"string"},{"name":"base_key","type":"int256"},{"name":"base_value","type":"string"}],"name":"update","outputs":[{"name":"","type":"int256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"base_id","type":"string"},{"name":"base_key","type":"int256"}],"name":"remove","outputs":[{"name":"","type":"int256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"base_id","type":"string"},{"name":"base_key","type":"int256"},{"name":"base_value","type":"string"}],"name":"insert","outputs":[{"name":"","type":"int256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"base_id","type":"string"}],"name":"select","outputs":[{"name":"","type":"string[]"},{"name":"","type":"int256[]"},{"name":"","type":"string[]"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]`,
 		},
 		FuncName: "insert",
@@ -321,8 +322,8 @@ func TestFiscoBcosClient_Trans_Query(t *testing.T) {
 	body := nodereq.TransData{
 		UserName: name,
 		Contract: nodereq.ContractData{
-			ContractName:    "BsnBaseContractk1",
-			ContractAddress: "0x866aefc204b8f8fdc3e45b908fd43d76667d7f76",
+			ContractName:    "BsnBaseGlobalContract",
+			ContractAddress: "0x5cc4d9d4945d8dd2eb371fb39b9d09b17eea70ff",
 			ContractAbi:     `[{"constant":false,"inputs":[{"name":"base_id","type":"string"},{"name":"base_key","type":"int256"},{"name":"base_value","type":"string"}],"name":"update","outputs":[{"name":"","type":"int256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"base_id","type":"string"},{"name":"base_key","type":"int256"}],"name":"remove","outputs":[{"name":"","type":"int256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"base_id","type":"string"},{"name":"base_key","type":"int256"},{"name":"base_value","type":"string"}],"name":"insert","outputs":[{"name":"","type":"int256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"base_id","type":"string"}],"name":"select","outputs":[{"name":"","type":"string[]"},{"name":"","type":"int256[]"},{"name":"","type":"string[]"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]`,
 		},
 		FuncName: "select",

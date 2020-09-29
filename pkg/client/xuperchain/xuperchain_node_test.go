@@ -6,20 +6,33 @@
 package xuperchain
 
 import (
+	"fmt"
 	config2 "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/config"
 	req "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/xuperchain/node"
 	"testing"
 )
 
+func getXuperChainClient(t *testing.T) *XuperChainClient {
+	config, err := config2.NewMockXuperchainConfig()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Println("cert", config.GetCert())
+
+	fabricClient, err := NewXuperChainClient(config)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+	return fabricClient
+}
+
 func TestXuperChainClient_ReqChainCode_Insert_Data(t *testing.T) {
-	config, err := config2.NewMockXuperchainSMConfig()
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	client, err := NewXuperChainClient(config)
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+
+	client := getXuperChainClient(t)
+
 	body := req.CallContractReqDataReqDataBody{
 		UserId:       "zxl072201708",
 		UserAddr:     "2CzpFVY3KYQcZZXBfEa6hmrFn17o4FMBdf",
@@ -36,14 +49,7 @@ func TestXuperChainClient_ReqChainCode_Insert_Data(t *testing.T) {
 	}
 }
 func TestXuperChainClient_ReqChainCode_Update_Data(t *testing.T) {
-	config, err := config2.NewMockXuperchainSMConfig()
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	client, err := NewXuperChainClient(config)
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	client := getXuperChainClient(t)
 	body := req.CallContractReqDataReqDataBody{
 		UserId:       "zxl072201708",
 		UserAddr:     "2CzpFVY3KYQcZZXBfEa6hmrFn17o4FMBdf",
@@ -60,14 +66,7 @@ func TestXuperChainClient_ReqChainCode_Update_Data(t *testing.T) {
 	}
 }
 func TestXuperChainClient_ReqChainCode_Select_Data(t *testing.T) {
-	config, err := config2.NewMockXuperchainSMConfig()
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	client, err := NewXuperChainClient(config)
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	client := getXuperChainClient(t)
 	body := req.CallContractReqDataReqDataBody{
 		UserId:       "zxl072201708",
 		UserAddr:     "2CzpFVY3KYQcZZXBfEa6hmrFn17o4FMBdf",
@@ -85,14 +84,7 @@ func TestXuperChainClient_ReqChainCode_Select_Data(t *testing.T) {
 }
 
 func TestXuperChainClient_ReqChainCode_Remove_Data(t *testing.T) {
-	config, err := config2.NewMockXuperchainSMConfig()
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	client, err := NewXuperChainClient(config)
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	client := getXuperChainClient(t)
 	body := req.CallContractReqDataReqDataBody{
 		UserId:       "zxl072201708",
 		UserAddr:     "2CzpFVY3KYQcZZXBfEa6hmrFn17o4FMBdf",
@@ -110,14 +102,7 @@ func TestXuperChainClient_ReqChainCode_Remove_Data(t *testing.T) {
 }
 
 func TestXuperChainClient_GetTxInfo(t *testing.T) {
-	config, err := config2.NewMockXuperchainSMConfig()
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	client, err := NewXuperChainClient(config)
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	client := getXuperChainClient(t)
 	body := req.GetTxInfoReqDataBody{
 		TxHash: "8ac7856fb8521ed90a40c9667ff1b617ab2bbaa076e051f58067915f1d9c3e6e",
 	}
@@ -131,14 +116,7 @@ func TestXuperChainClient_GetTxInfo(t *testing.T) {
 }
 
 func TestXuperChainClient_GetBlockInfo_ByBlockHeight(t *testing.T) {
-	config, err := config2.NewMockXuperchainSMConfig()
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	client, err := NewXuperChainClient(config)
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	client := getXuperChainClient(t)
 	body := req.GetBlockInfoReqDataBody{
 		BlockHeight: 276229,
 		BlockHash:   "", //must be empty
@@ -152,14 +130,7 @@ func TestXuperChainClient_GetBlockInfo_ByBlockHeight(t *testing.T) {
 	}
 }
 func TestXuperChainClient_GetBlockInfo_ByBlockHash(t *testing.T) {
-	config, err := config2.NewMockXuperchainSMConfig()
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	client, err := NewXuperChainClient(config)
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	client := getXuperChainClient(t)
 	body := req.GetBlockInfoReqDataBody{
 		BlockHeight: 0, //must be zero
 		BlockHash:   "bae9328a98409aa5d0c9d0a061d0ef59dfc7f22add23aa50fb9cea7fcf6a5ea8",

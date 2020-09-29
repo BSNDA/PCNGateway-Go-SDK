@@ -7,7 +7,6 @@ import (
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"encoding/pem"
-	"fmt"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/eth"
@@ -41,7 +40,6 @@ func GetCSRPEM(name string, algorithmType enum.App_AlgorithmType, ks bccsp.KeySt
 	key, cspSigner, err := keystore.BCCSPKeyRequestGenerate(ks, keyOpts)
 
 	if err != nil {
-		fmt.Println(err)
 		return "", nil, err
 	}
 
@@ -53,7 +51,6 @@ func GetCSRPEM(name string, algorithmType enum.App_AlgorithmType, ks bccsp.KeySt
 		csrPEM, err = csr.Generate(cspSigner, cr)
 	}
 	if err != nil {
-		fmt.Println(err)
 		return "", nil, err
 	}
 

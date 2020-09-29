@@ -43,7 +43,7 @@ func InitFabricClient(config *config.Config) (*FabricClient, error) {
 	err = fabricClient.SetAlgorithm(config.GetAppInfo().AlgorithmType, config.GetAppCert().AppPublicCert, config.GetAppCert().UserAppPrivateCert)
 
 	if err != nil {
-		logger.Error("signHandle initialization failed")
+		logger.Error("signHandle initialization failed:%v", err)
 		return nil, err
 	}
 	//load the client's info generated locally

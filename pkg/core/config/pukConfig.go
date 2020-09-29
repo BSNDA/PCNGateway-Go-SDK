@@ -62,14 +62,49 @@ MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEh4WlY4pCv814i3WY5aRhtR3PoiIXOM1I
 -----END PUBLIC KEY-----`
 )
 
+var test = false
+
+//Enable test net parameters
+//set test gateway public key
+func SetTest() {
+	test = true
+}
+
+func getSmKey() string {
+	if test {
+		return PubK_SM_test
+	} else {
+		return PubK_SM
+	}
+
+}
+
+func getR1Key() string {
+	if test {
+		return PubK_R1_test
+	} else {
+		return PubK_R1
+	}
+
+}
+
+func getK1Key() string {
+	if test {
+		return Pubk_K1_test
+	} else {
+		return Pubk_K1
+	}
+
+}
+
 func getGatewayPublicKey(algorithmType enum.App_AlgorithmType) string {
 	switch algorithmType {
 	case enum.AppAlgorithmType_SM2:
-		return PubK_SM
+		return getSmKey()
 	case enum.AppAlgorithmType_R1:
-		return PubK_R1
+		return getR1Key()
 	case enum.AppAlgorithmType_K1:
-		return Pubk_K1
+		return getK1Key()
 	}
 
 	return ""
