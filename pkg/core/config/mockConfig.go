@@ -2,7 +2,7 @@ package config
 
 const (
 	_MspDir    = "D:/test/bsn-sdk-go/msp"
-	_HttpsCert = "E:/Work/RedBaaS/04SourceCode/Gateway_sdk/src/github.com/BSNDA/PCNGateway-Go-SDK/test/cert/bsn_gateway_https.crt"
+	_HttpsCert = "D:/github.com/BSNDA/PCNGateway-Go-SDK/test/cert/bsn_gateway_https.crt"
 )
 
 func NewMockFabricConfig() (*Config, error) {

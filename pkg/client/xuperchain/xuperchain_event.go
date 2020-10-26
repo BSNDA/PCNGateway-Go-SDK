@@ -30,7 +30,6 @@ func (c *XuperChainClient) RegisterEvent(body req.RegisterEventReqDataBody) (*re
 	res := &res.QueryEventResData{}
 
 	err = json.Unmarshal(resBytes, res)
-
 	if err != nil {
 		logger.Error("return parameter serialization failed：", err)
 		return nil, err
