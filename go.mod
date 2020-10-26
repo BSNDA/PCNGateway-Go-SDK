@@ -10,4 +10,8 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/tjfoc/gmsm v1.3.2
 	github.com/wonderivan/logger v1.0.0
+	github.com/xuperchain/crypto v0.0.0-20201022090047-228df0d80193
+	golang.org/x/net v0.0.0-20200625001655-4c5254603344
+	google.golang.org/genproto v0.0.0-20180817151627-c66870c02cf8
+	google.golang.org/grpc v1.23.0
 )

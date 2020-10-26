@@ -6,7 +6,7 @@ import (
 
 type CallContractResData struct {
 	base.BaseResModel
-	Body *CallContractResDataBody `json:"body"` // 消息体
+	Body *CallContractResDataBody `json:"body"`
 }
 
 type CallContractResDataBody struct {
