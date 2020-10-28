@@ -2,6 +2,7 @@ package node
 
 import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
+	"strconv"
 )
 
 type UPukCallContractReqData struct {
@@ -16,5 +17,5 @@ type UPukCallContractReqDataReqDataBody struct {
 }
 
 func (m *UPukCallContractReqData) GetEncryptionValue() string {
-	return m.GetBaseEncryptionValue() + m.Body.Initiator + m.Body.TransData
+	return m.GetBaseEncryptionValue() + m.Body.Initiator + m.Body.TransData + strconv.Itoa(m.Body.Flag)
 }
