@@ -23,7 +23,10 @@
 <td>FISCO-BCOS</td><td></td><td>支持</td><td>支持</td><td></td><td>支持</td><td>支持</td>
 </tr>
 <tr>
-<td>XuperChain</td><td></td><td></td><td></td><td></td><td></td><td>支持</td>
+<td>XuperChain</td><td></td><td></td><td>支持</td><td></td><td></td><td>支持</td>
+</tr>
+<tr>
+<td>CITA</td><td></td><td></td><td></td><td></td><td></td><td>支持</td>
 </tr>
 </table>
 </escape>
