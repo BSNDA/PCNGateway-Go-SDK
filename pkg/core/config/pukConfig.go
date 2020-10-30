@@ -62,7 +62,7 @@ MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEh4WlY4pCv814i3WY5aRhtR3PoiIXOM1I
 -----END PUBLIC KEY-----`
 )
 
-var test = true
+var test = false
 
 //Enable test net parameters
 //set test gateway public key

@@ -49,3 +49,17 @@ DFT+md7r
 
 	return NewConfig2(api, userCode, appCode, privK, _MspDir)
 }
+func NewMockCitaConfig() (*Config, error) {
+	api := "http://192.168.1.43:17502"
+	userCode := "USER0001202007151006209656179"
+	appCode := "app0001202010281411370741443"
+
+	privK := `-----BEGIN PRIVATE KEY-----
+MIGTAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBHkwdwIBAQQgVykzw4O/mZaJ8kJ8
+LXX9bzpPVeXWGggYzVGeMuZM29ugCgYIKoEcz1UBgi2hRANCAASVecisbIxDUFXj
+Ra6Rzr88PrjoEekdnqYzcopJhFIpt2mfLcU+QR9IvcyT/BBprDJl3rdWx92Z4/zv
+tU4l8jft
+-----END PRIVATE KEY-----`
+	SetTest()
+	return NewConfig2(api, userCode, appCode, privK, _MspDir)
+}
