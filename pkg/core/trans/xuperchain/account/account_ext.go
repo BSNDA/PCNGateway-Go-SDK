@@ -1,8 +1,3 @@
-// @Title  account_ext
-// @Description
-// @Author  zxl  2020/7/1 16:39
-// @Version 1.0.0
-// @Update  2020/7/1 16:39
 package account
 
 import (
@@ -10,6 +5,20 @@ import (
 	"github.com/tjfoc/gmsm/sm2"
 	"github.com/xuperchain/crypto/gm/account"
 )
+
+//根据公钥生成address
+func GetAddressFromPublicKey(pubkey string) (string, error) {
+	puk, err := sm2.ReadPublicKeyFromMem([]byte(pubkey), nil)
+	if err != nil {
+		return "", err
+	}
+	var key = &ecdsa.PublicKey{}
+	key.Y = puk.Y
+	key.X = puk.X
+	key.Curve = puk.Curve
+	address, err := account.GetAddressFromPublicKey(key)
+	return address, err
+}
 
 func GetEcdsaPrivateKey(prikey string) (*ecdsa.PrivateKey, error) {
 	pkey, err := sm2.ReadPrivateKeyFromMem([]byte(prikey), nil)
@@ -24,6 +33,7 @@ func GetEcdsaPrivateKey(prikey string) (*ecdsa.PrivateKey, error) {
 	return key, nil
 }
 
+//获取json格式的公钥信息
 func GetEcdsaPublicKeyJsonFormatFromPublicKey(pubkey string) (string, error) {
 	puk, err := sm2.ReadPublicKeyFromMem([]byte(pubkey), nil)
 	if err != nil {
