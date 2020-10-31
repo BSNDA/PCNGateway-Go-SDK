@@ -5,6 +5,74 @@ Normally，if an off-BSN system wants to communicate with a service (DApp) on th
 
 ## Go SDK
 
+## SDK in csharp
+
+## framework and key support
+
+>Currently, SDK in Go supports all framework and key combination applications on the official website
+
+The details are as follows：
+
+<table>
+<tr>
+<th rowspan="2">framework</th>
+<th colspan="3" >public key upload mode</th>
+<th colspan="3" >key trust mode</th>
+</tr>
+<tr>
+<th>secp256r1</th>
+<th>secp256k1</th>
+<th>SM2</th>
+<th>secp256r1</th>
+<th>secp256k1</th>
+<th>SM2</th>
+</tr>
+<tr>
+<td>Fabric</td>
+<td>√</td>
+<td></td>
+<td>√</td>
+<td>√</td>
+<td></td>
+<td>√</td>
+</tr>
+<tr>
+<td>FISCO-BCOS</td>
+<td></td>
+<td>√</td>
+<td>√</td>
+<td></td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>XuperChain</td>
+<td></td>
+<td></td>
+<td>√</td>
+<td></td>
+<td></td>
+<td>√</td>
+</tr>	
+<tr>
+<td>Cita</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>√</td>
+</tr>
+</table>
+
+* Fabric framework application uses two modes: secret key escrow and secret key upload of secp256r1 and SM2;
+
+* Fisco-bcos framework uses two modes: secret key hosting and secret key uploading of secp256k1 and SM2;
+
+* Xuperchain framework uses two modes of SM2 secret key hosting and secret key uploading;
+
+* CITA framework application only supports SM2 key escrow mode;
+
 ### 1. Preparation before 
 
 #### Application parameters
