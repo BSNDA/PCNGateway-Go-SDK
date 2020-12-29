@@ -2,8 +2,12 @@ package cita
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	nodereq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/cita/node"
 	noderes "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/cita/node"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans/cita"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 	"github.com/wonderivan/logger"
 )
@@ -147,4 +151,69 @@ func (c *CitaClient) GetTxInfoByTxHash(body nodereq.TxTransReqDataBody) (*nodere
 	}
 
 	return res, nil
+}
+
+func (c *CitaClient) Trans(data nodereq.TransData) (*noderes.TransResData, error) {
+	if c.Config.GetAppInfo().CAType == enum.AppCaType_Trust {
+		return nil, errors.New("the trusteeship application cannot call the api")
+	}
+	url := c.GetURL("/api/cita/v1/node/trans")
+
+	tx, err := c.getTransData(data)
+	if err != nil {
+		return nil, err
+	}
+
+	reqData := &nodereq.KeyTransReqData{}
+	reqData.Header = c.GetHeader()
+	reqData.Body = nodereq.KeyTransReqDataBody{
+		ContractName: data.Contract.ContractName,
+		TransData:    tx,
+	}
+	reqData.Mac = c.Sign(reqData.GetEncryptionValue())
+
+	reqBytes, _ := json.Marshal(reqData)
+
+	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	if err != nil {
+		logger.Error("gateway interface call failed：", err)
+		return nil, err
+	}
+	res := &noderes.TransResData{}
+
+	err = json.Unmarshal(resBytes, res)
+
+	fmt.Println(c.Verify(res.Mac, res.GetEncryptionValue()))
+
+	if err != nil {
+		logger.Error("return parameter serialization failed：", err)
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (c *CitaClient) getTransData(data nodereq.TransData) (string, error) {
+	blockLimit, err := c.getBlockLimit()
+	if err != nil {
+		return "", err
+	}
+	chainId, version, err := c.getBaseInfo()
+	if err != nil {
+		return "", err
+	}
+
+	key, err := c.getUser(data.UserName)
+	if err != nil {
+		return "", err
+	}
+
+	tx, _, err := cita.TransData(data.Contract.ContractAbi, data.Contract.ContractAddress, data.FuncName, data.Args, blockLimit, chainId, version, c.isSM(), key)
+
+	if err != nil {
+		return "", err
+	} else {
+		return tx, nil
+	}
+
 }

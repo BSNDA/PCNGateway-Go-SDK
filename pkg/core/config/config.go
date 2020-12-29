@@ -135,7 +135,7 @@ func (c *Config) Init() error {
 		c.app.MspId = res.Body.MspId
 
 		c.app.ChannelId = res.Body.ChannelId
-
+		c.app.Version = res.Body.Version
 		c.isInit = true
 	}
 
@@ -163,6 +163,7 @@ type appInfo struct {
 
 	MspId     string
 	ChannelId string
+	Version   string
 }
 
 type userInfo struct {

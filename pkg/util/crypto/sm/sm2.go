@@ -42,3 +42,22 @@ func SignData(key *sm2.PrivateKey, digest []byte) (r, s, pub *big.Int, err error
 	return
 
 }
+func SignDataCita(key *sm2.PrivateKey, digest []byte) (r, s, pub *big.Int, err error) {
+
+	h := sm3.New()
+	h.Write(digest)
+	hash := h.Sum(nil)
+
+	r, s, err = sm2.Sm2Sign(key, hash, default_uid)
+
+	if err != nil {
+		return
+	}
+
+	pb := FromECDSAPub(&key.PublicKey)
+
+	pub = new(big.Int).SetBytes(pb[1:])
+
+	return
+
+}

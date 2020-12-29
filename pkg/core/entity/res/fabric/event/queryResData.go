@@ -8,7 +8,7 @@ type QueryResData struct {
 }
 
 type EventQueryBody struct {
-	EventKey   string `json:"eventKey"`
+	EventKey   string `json:"eventKey,omitempty"`
 	NotifyUrl  string `json:"notifyUrl"`
 	AttachArgs string `json:"attachArgs"`
 	EventId    string `json:"eventId"`
@@ -16,7 +16,8 @@ type EventQueryBody struct {
 	OrgCode    string `json:"orgCode"`
 	UserCode   string `json:"userCode"`
 	AppCode    string `json:"appCode"`
-	ChainCode  string `json:"chainCode"`
+	ChainCode  string `json:"chainCode,omitempty"`
+	EventType  string `json:"eventType,omitempty"`
 }
 
 func (f *QueryResData) GetEncryptionValue() string {

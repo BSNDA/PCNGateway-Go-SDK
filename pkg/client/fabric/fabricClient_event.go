@@ -40,6 +40,37 @@ func (c *FabricClient) EventRegister(body eventreq.RegisterReqDataBody) (*eventr
 	return res, nil
 }
 
+/**未发布**/
+//func (c *FabricClient) BlockEventRegister(body eventreq.RegisterReqDataBody) (*eventres.RegisterResData, error) {
+//
+//	url := c.GetURL("/api/fabric/v1/chainCode/event/blockRegister")
+//
+//	data := &eventreq.RegisterReqData{}
+//	data.Header = c.GetHeader()
+//	data.Body = body
+//	data.Mac = c.Sign(data.GetEncryptionValue())
+//
+//	reqBytes, _ := json.Marshal(data)
+//
+//	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+//
+//	if err != nil {
+//		logger.Error("gateway interface call failed：", err)
+//		return nil, err
+//	}
+//
+//	res := &eventres.RegisterResData{}
+//
+//	err = json.Unmarshal(resBytes, res)
+//
+//	if err != nil {
+//		logger.Error("return parameter serialization failed：", err)
+//		return nil, err
+//	}
+//
+//	return res, nil
+//}
+
 func (c *FabricClient) EventQuery() (*eventres.QueryResData, error) {
 
 	url := c.GetURL("/api/fabric/v1/chainCode/event/query")

@@ -11,7 +11,7 @@ func TestCitaClient_RegisterUser(t *testing.T) {
 	citaClient := getCitaClient(t)
 
 	body := req.RegisterReqDataBody{
-		UserId: "test10281116",
+		UserId: "testcurel",
 	}
 
 	res, err := citaClient.RegisterUser(body)
@@ -19,9 +19,6 @@ func TestCitaClient_RegisterUser(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if res.Header.Code != 0 {
-		t.Fatal(res.Header.Msg)
-	}
 	fmt.Println(res)
 	fmt.Println(citaClient.Verify(res.Mac, res.GetEncryptionValue()))
 }

@@ -17,6 +17,7 @@ type AppInfoResDataBody struct {
 	AlgorithmType int    `json:"algorithmType"`
 	MspId         string `json:"mspId"`
 	ChannelId     string `json:"channelId"`
+	Version       string `json:"version"`
 }
 
 func (f *AppInfoResData) GetEncryptionValue() string {

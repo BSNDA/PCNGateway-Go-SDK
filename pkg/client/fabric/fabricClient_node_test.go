@@ -66,15 +66,15 @@ func TestFabricClient_ReqChainCode(t *testing.T) {
 
 	var args []string
 	//args = append(args, "test2020104")
-	args = append(args, "{\"baseKey\":\"test2020105\",\"baseValue\":\"this is string \"}")
+	args = append(args, "{\"baseKey\":\"test20201222\",\"baseValue\":\"this is string11 \"}")
 
 	nonce, _ := crypto.GetRandomNonce()
 
 	body := req.TransReqDataBody{
 		UserName:     name,
 		Nonce:        base64.StdEncoding.EncodeToString(nonce),
-		ChainCode:    "cc_99613acedfe94e879252f25a50f5bb27",
-		FuncName:     "set",
+		ChainCode:    "cc_app0001202012111600499234472_02",
+		FuncName:     "update",
 		Args:         args,
 		TransientMap: make(map[string]string),
 	}
@@ -92,7 +92,7 @@ func TestFabricClient_GetTransInfo(t *testing.T) {
 	fabricClient := getFabricClient(t)
 
 	tx := req.TxTransReqDataBody{
-		TxId: "9092ccfe3af254f5afc4b0aba770f521c1357ea8e47e97757a0eca7da047cb94",
+		TxId: "b448496c1f161bd62709915ed3cdb79d595fc585dbd1237e60fe2d3911410e06",
 	}
 
 	res, _ := fabricClient.GetTransInfo(tx)
@@ -112,7 +112,7 @@ func TestFabricClient_GetBlockInfo(t *testing.T) {
 
 	tx := req.BlockReqDataBody{
 
-		BlockHash: "8b29e587b15a4d6edf1b66f8a26e9f773db64f3aa292897b2577e1808bffbeb1",
+		BlockHash: "2a491d3bed3e97b304797390182000a6fa625e11d74567142e1a8fc670c1bbf9",
 	}
 
 	res, _ := fabricClient.GetBlockInfo(tx)

@@ -11,9 +11,9 @@ func TestFabricClient_EventRegister(t *testing.T) {
 	fabricClient := getFabricClient(t)
 
 	body := req.RegisterReqDataBody{
-		ChainCode:  "cc_app0001202007291443281737652_01",
+		ChainCode:  "cc_app0001202012111600499234472_02",
 		EventKey:   "test",
-		NotifyUrl:  "http://192.168.6.85:18080/api/fisco/test",
+		NotifyUrl:  "http://192.168.1.172:58011/v1/fabric/test",
 		AttachArgs: "a=1",
 	}
 
@@ -22,6 +22,22 @@ func TestFabricClient_EventRegister(t *testing.T) {
 	fmt.Println(res)
 
 }
+
+/**未发布**/
+//func TestFabricClient_BlockEventRegister(t *testing.T) {
+//
+//	fabricClient := getFabricClient(t)
+//
+//	body := req.RegisterReqDataBody{
+//		NotifyUrl:  "http://192.168.1.172:58011/v1/fabric/test",
+//		AttachArgs: "a=1",
+//	}
+//
+//	res, _ := fabricClient.BlockEventRegister(body)
+//
+//	fmt.Println(res)
+//
+//}
 
 func TestFabricClient_EventQuery(t *testing.T) {
 	fabricClient := getFabricClient(t)
@@ -34,7 +50,7 @@ func TestFabricClient_EventQuery(t *testing.T) {
 func TestFabricClient_EventRemove(t *testing.T) {
 	fabricClient := getFabricClient(t)
 	body := req.RemoveReqDataBody{
-		EventId: "eaf3f0ca28f0455db4fc9fa2b8b0c8d3",
+		EventId: "c5d10b8df8f64700a8bccaf46d390dd8",
 	}
 
 	res, _ := fabricClient.EventRemove(body)
