@@ -7,7 +7,7 @@ import (
 
 func GetUUID() string {
 
-	u1, _ := uuid.NewV4()
+	u1 := uuid.NewV4()
 	return strings.Replace(u1.String(), "-", "", -1)
 
 }

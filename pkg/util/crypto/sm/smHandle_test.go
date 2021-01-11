@@ -12,12 +12,7 @@ func TestSm2Handle_Sign(t *testing.T) {
 	//KS/i2zlbzA3gnrZPKjh8jfh++exUmliaJ1qlzeNeXHyEbV31Rqk4+Go3Tw==
 	//-----END PUBLIC KEY-----`
 
-	prik := `-----BEGIN PRIVATE KEY-----
-MIGTAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBHkwdwIBAQQgYy1PjNmYLJrs1YL4
-7xeGSBtc7bHii4fcQBoX+zOkgBigCgYIKoEcz1UBgi2hRANCAAQNb2yvAn3s+7A1
-NcqkIEvP4qCnwGgpL+LbOVvMDeCetk8qOHyN+H757FSaWJonWqXN415cfIRtXfVG
-qTj4ajdP
------END PRIVATE KEY-----`
+	prik := `……`
 
 	sm, err := NewSM2Handle("", prik)
 
@@ -45,12 +40,7 @@ MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAECBTmBCyjjyg0h4F1f/PiLVNJyDM1
 YRgctLay3FE5wWLqG0OH0p5fP8I5UT+pb1gkirIchlDxuwdVdVlUuQMrTQ==
 -----END PUBLIC KEY-----`
 
-	prik := `-----BEGIN PRIVATE KEY-----
-MIGTAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBHkwdwIBAQQgDvuumI/YLlcYhtO0
-klhtbxYHH8Mk8clOEtDjG3obhUugCgYIKoEcz1UBgi2hRANCAAQIFOYELKOPKDSH
-gXV/8+ItU0nIMzVhGBy0trLcUTnBYuobQ4fSnl8/wjlRP6lvWCSKshyGUPG7B1V1
-WVS5AytN
------END PRIVATE KEY-----`
+	prik := `……`
 
 	sm, err := NewSM2Handle(puk, prik)
 	if err != nil {

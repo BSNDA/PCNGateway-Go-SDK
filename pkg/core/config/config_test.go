@@ -7,7 +7,7 @@ import (
 
 func TestConfigInit(t *testing.T) {
 
-	config, err := NewMockConfig()
+	config, err := NewMockFabricConfig()
 
 	if err != nil {
 		t.Fatal(err)

@@ -6,18 +6,19 @@ import (
 )
 
 func TestEcdsaHandle_Sign(t *testing.T) {
-	//	puk := `-----BEGIN PUBLIC KEY-----
-	//MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEHxaNHI1l5vRXtRf7ynmGTPucSBgG
-	//vKYL29fnPrPG0asPvcVr0qEL/ALj9kxSXuIk8WSRNbS8R1bERHx9Jjh9aQ==
-	//-----END PUBLIC KEY-----`
+	puk := `-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEy4wBr/o5jSJHopiBfe9rhPhn//y
++Qf35AH4wwa92AjxLuhk28GlzOK7YiB5BitgttSlk+wLgTlEPF9m18cAvw==
+-----END PUBLIC KEY-----`
 
 	priker := `-----BEGIN PRIVATE KEY-----
-MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgcRniHqapLZ4dwFpJ
-Zo3ExKJfnRrYlOzHtLgWYEtiOy2hRANCAAQfFo0cjWXm9Fe1F/vKeYZM+5xIGAa8
-pgvb1+c+s8bRqw+9xWvSoQv8AuP2TFJe4iTxZJE1tLxHVsREfH0mOH1p
+MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgxjJR06JfqaHDcpIN
+JQb+MH0Bs2nWIhRUFJ3P4fIA8kCgCgYIKoZIzj0DAQehRANCAATko6mtCruC7pLI
+MOZ4ktl9J2Lg5uQKx4fLIqT2oSZiFsZRhoMnaKmUfAPcYy3zaVmTtRkddHnTi0EC
+V/xD6Mpe
 -----END PRIVATE KEY-----`
 
-	ec, err := NewEcdsaR1Handle("", priker)
+	ec, err := NewEcdsaR1Handle(puk, priker)
 
 	if err != nil {
 		fmt.Println(err)
