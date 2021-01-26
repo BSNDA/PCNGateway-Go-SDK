@@ -23,12 +23,22 @@ type KeyTransReqData struct {
 }
 
 type KeyTransReqDataBody struct {
-	ContractName string `json:"contractName"` //合约名称
-	TransData    string `json:"transData"`
+	ContractName    string `json:"contractName"` //合约名称
+	TransData       string `json:"transData"`
+	ContractAddress string `json:"contractAddress,omitempty"`
+	ContractAbi     string `json:"contractAbi,omitempty"`
 }
 
 func (f *KeyTransReqData) GetEncryptionValue() string {
 
-	return f.GetBaseEncryptionValue() + f.Body.ContractName + f.Body.TransData
+	fb := f.GetBaseEncryptionValue() + f.Body.ContractName + f.Body.TransData
 
+	if len(f.Body.ContractAddress) > 0 {
+		fb = fb + f.Body.ContractAddress
+	}
+	if len(f.Body.ContractAbi) > 0 {
+		fb = fb + f.Body.ContractAbi
+	}
+
+	return fb
 }

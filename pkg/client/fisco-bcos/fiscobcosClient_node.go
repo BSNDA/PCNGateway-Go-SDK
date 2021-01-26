@@ -208,6 +208,31 @@ func (c *FiscoBcosClient) GetTxInfoByTxHash(body nodereq.TxReqDataBody) (*nodere
 	return res, nil
 }
 
+func (c *FiscoBcosClient) getTransDataAndConstant(data nodereq.TransData) (string, bool, error) {
+	blockLimit, err := c.getBlockLimit()
+	if err != nil {
+		return "", false, err
+	}
+	groupId, err := c.getGroupId()
+	if err != nil {
+		return "", false, err
+	}
+
+	key, err := c.getUser(data.UserName)
+	if err != nil {
+		return "", false, err
+	}
+
+	tx, constant, err := fiscobcos.TransData(data.Contract.ContractAbi, data.Contract.ContractAddress, data.FuncName, data.Args, groupId, blockLimit, nil, c.isSM(), key)
+
+	if err != nil {
+		return "", false, err
+	} else {
+		return tx, constant, nil
+	}
+
+}
+
 func (c *FiscoBcosClient) getTransData(data nodereq.TransData) (string, error) {
 	blockLimit, err := c.getBlockLimit()
 	if err != nil {
@@ -236,7 +261,7 @@ func (c *FiscoBcosClient) getTransData(data nodereq.TransData) (string, error) {
 func (c *FiscoBcosClient) Trans(data nodereq.TransData) (*noderes.TransResData, error) {
 	url := c.GetURL("/api/fiscobcos/v1/node/trans")
 
-	tx, err := c.getTransData(data)
+	tx, constant, err := c.getTransDataAndConstant(data)
 	if err != nil {
 		return nil, err
 	}
@@ -247,6 +272,12 @@ func (c *FiscoBcosClient) Trans(data nodereq.TransData) (*noderes.TransResData, 
 		ContractName: data.Contract.ContractName,
 		TransData:    tx,
 	}
+
+	if constant {
+		reqData.Body.ContractAbi = data.Contract.ContractAbi
+		reqData.Body.ContractAddress = data.Contract.ContractAddress
+	}
+
 	reqData.Mac = c.Sign(reqData.GetEncryptionValue())
 
 	reqBytes, _ := json.Marshal(reqData)
