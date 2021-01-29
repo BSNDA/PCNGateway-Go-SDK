@@ -62,7 +62,7 @@ func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) error {
 		Secret: body.Secret,
 	}
 
-	csr, key, err := cert.GetCSRPEM(c.GetCertName(enrollBody.Name), c.Config.GetAppInfo().AlgorithmType, c.Ks)
+	csr, key, err := cert.GetCSRPEM(c.GetCertName(enrollBody.Name), c.Config.GetAppInfo().AlgorithmType, c.ks)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -98,8 +98,8 @@ func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) error {
 		}
 		user.SetSignHandle(sh)
 
-		c.Us.Store(user)
-		c.Users[user.UserName] = user
+		c.us.Store(user)
+		c.users[user.UserName] = user
 	} else {
 		return errors.New(res.Header.Msg)
 	}

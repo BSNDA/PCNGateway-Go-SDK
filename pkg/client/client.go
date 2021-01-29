@@ -14,39 +14,31 @@ import (
 
 type Client struct {
 	Config *config.Config
-
-	sign sign.Crypto
+	sign   sign.Crypto
 }
 
 func (c *Client) SetAlgorithm(algorithmType enum.App_AlgorithmType, puk, pri string) error {
+
+	var sh sign.SignHandle
+	var err error
+
 	switch algorithmType {
 	case enum.AppAlgorithmType_SM2:
-		sh, err := sm.NewSM2Handle(puk, pri)
-		if err != nil {
-			return err
-		} else {
-			c.sign = sign.NewCrypto(sh)
-			return nil
-		}
+		sh, err = sm.NewSM2Handle(puk, pri)
 	case enum.AppAlgorithmType_R1:
-		sh, err := secp256r1.NewEcdsaR1Handle(puk, pri)
-		if err != nil {
-			return err
-		} else {
-			c.sign = sign.NewCrypto(sh)
-			return nil
-		}
+		sh, err = secp256r1.NewEcdsaR1Handle(puk, pri)
 	case enum.AppAlgorithmType_K1:
-		sh, err := secp256k1.NewEcdsaK1Handle(puk, pri)
-		if err != nil {
-			return err
-		} else {
-			c.sign = sign.NewCrypto(sh)
-			return nil
-		}
+		sh, err = secp256k1.NewEcdsaK1Handle(puk, pri)
+	default:
+		return errors.New("Invalid certificate type")
 	}
 
-	return errors.New("Invalid certificate type")
+	if err != nil {
+		return err
+	} else {
+		c.sign = sign.NewCrypto(sh)
+		return nil
+	}
 
 }
 
