@@ -43,6 +43,7 @@ func SendPost(dataBytes []byte, url string, cert string) ([]byte, error) {
 		client = &http.Client{
 			//define the mechanism for a single Http request
 			Transport: &http.Transport{
+				DisableKeepAlives: true,
 				//define TLS client configuration
 				TLSClientConfig: &tls.Config{
 					//add RootCA cert pool（add public key cert of https to RootCA cert pool）
@@ -66,6 +67,9 @@ func SendPost(dataBytes []byte, url string, cert string) ([]byte, error) {
 		logger.Error("request failed：", err.Error())
 		return nil, err
 	}
+	if response != nil && response.Body != nil {
+		defer response.Body.Close()
+	}
 	//Get the response message data from the response object and read it
 	allBytes := []byte{}
 	//buffer
@@ -80,7 +84,7 @@ func SendPost(dataBytes []byte, url string, cert string) ([]byte, error) {
 		}
 		allBytes = append(allBytes, bytes[:i]...)
 	}
-	response.Body.Close()
+	//response.Body.Close()
 	logger.Debug("response message：", string(allBytes))
 	return allBytes, nil
 }
