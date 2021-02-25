@@ -37,7 +37,7 @@ func InitFabricClient(config *config.Config) (*FabricClient, error) {
 		Client: client,
 		ks:     ks,
 		us:     us,
-		users:  make(map[string]*msp.UserData),
+		Users:  make(map[string]*msp.UserData),
 	}
 	//configure the algorithm type of user signature and generate a unified signature verification handler
 	err = fabricClient.SetAlgorithm(config.GetAppInfo().AlgorithmType, config.GetAppCert().AppPublicCert, config.GetAppCert().UserAppPrivateCert)
@@ -56,7 +56,7 @@ type FabricClient struct {
 	client.Client
 	ks    bccsp.KeyStore
 	us    userstore.UserStore
-	users map[string]*msp.UserData
+	Users map[string]*msp.UserData
 }
 
 func (c *FabricClient) GetCertName(name string) string {
@@ -75,14 +75,14 @@ func (c *FabricClient) LoadUser() {
 		err := keystore.LoadKey(user, c.ks, c.Config.GetAppInfo().AlgorithmType)
 
 		if err == nil {
-			c.users[user.UserName] = user
+			c.Users[user.UserName] = user
 		}
 	}
 
 }
 
 func (c *FabricClient) GetUser(name string) (*msp.UserData, error) {
-	user, ok := c.users[name]
+	user, ok := c.Users[name]
 	if ok {
 		return user, nil
 	} else {
@@ -108,7 +108,7 @@ func (c *FabricClient) LoadLocalUser(name string) (*msp.UserData, error) {
 		return nil, err
 
 	} else {
-		c.users[user.UserName] = user
+		c.Users[user.UserName] = user
 		return user, nil
 
 	}

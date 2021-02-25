@@ -54,6 +54,7 @@ func SendPost(dataBytes []byte, url string, cert string) ([]byte, error) {
 	} else {
 		logger.Debug("Http")
 		tr := new(http.Transport)
+		tr.DisableKeepAlives = true
 		client = &http.Client{
 			//define the mechanism for a single HTTP request
 			Transport: tr,

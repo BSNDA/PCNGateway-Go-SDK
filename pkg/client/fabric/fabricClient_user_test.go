@@ -44,5 +44,5 @@ func TestFabricClient_EnrollUser(t *testing.T) {
 func TestFabricClient_LoadUser(t *testing.T) {
 	fabricClient := getFabricClient(t)
 
-	fmt.Println(*fabricClient.users["abcde"])
+	fmt.Println(*fabricClient.Users["abcde"])
 }

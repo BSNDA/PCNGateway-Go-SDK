@@ -99,7 +99,7 @@ func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) error {
 		user.SetSignHandle(sh)
 
 		c.us.Store(user)
-		c.users[user.UserName] = user
+		c.Users[user.UserName] = user
 	} else {
 		return errors.New(res.Header.Msg)
 	}
