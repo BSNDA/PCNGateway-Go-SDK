@@ -21,6 +21,21 @@ var (
 	ChainId = new(big.Int).SetInt64(1)
 )
 
+func ParesData(contractabi, funcName string, args []interface{}, smcrypto bool) (string, error) {
+	abi, err := abi.JSON(strings.NewReader(contractabi))
+	if err != nil {
+		return "", err
+	}
+
+	funcData, err := pack(&abi, funcName, args, smcrypto)
+	if err != nil {
+		return "", err
+	}
+
+	return hexutil.Encode(funcData), nil
+
+}
+
 func TransData(contractabi, contractAddress string, funcName string, args []interface{}, groupId, blockLimit *big.Int, extraData []byte, smcrypto bool, privKey interface{}) (string, bool, error) {
 
 	abi, err := abi.JSON(strings.NewReader(contractabi))

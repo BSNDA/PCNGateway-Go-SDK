@@ -223,3 +223,20 @@ func Test5(t *testing.T) {
 
 	fmt.Println(hex1)
 }
+
+func TestParesData(t *testing.T) {
+	abiString := `[{"constant":false,"inputs":[{"name":"base_id","type":"string"},{"name":"base_key","type":"int256"},{"name":"base_value","type":"string"}],"name":"update","outputs":[{"name":"","type":"int256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"base_id","type":"string"},{"name":"base_key","type":"int256"}],"name":"remove","outputs":[{"name":"","type":"int256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"base_id","type":"string"},{"name":"base_key","type":"int256"},{"name":"base_value","type":"string"}],"name":"insert","outputs":[{"name":"","type":"int256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"base_id","type":"string"}],"name":"select","outputs":[{"name":"","type":"string[]"},{"name":"","type":"int256[]"},{"name":"","type":"string[]"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]`
+	funcName := "insert"
+	var args []interface{}
+	pr := new(big.Int).SetInt64(101)
+	args = append(args, "abc123")
+	args = append(args, pr)
+	args = append(args, "abc12345")
+
+	data, err := ParesData(abiString, funcName, args, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Println(data)
+}
