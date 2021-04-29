@@ -33,6 +33,7 @@ func (f *QueryResData) GetEncryptionValue() string {
 		fp = fp + task.UserCode
 		fp = fp + task.AppCode
 		fp = fp + task.ChainCode
+		fp = fp + task.EventType
 	}
 
 	return fp
