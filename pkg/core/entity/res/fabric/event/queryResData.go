@@ -24,10 +24,10 @@ func (f *QueryResData) GetEncryptionValue() string {
 
 	fp := f.GetBaseEncryptionValue()
 	for _, task := range f.Body {
+		fp = fp + task.EventId
 		fp = fp + task.EventKey
 		fp = fp + task.NotifyUrl
 		fp = fp + task.AttachArgs
-		fp = fp + task.EventId
 		fp = fp + task.CreateTime
 		fp = fp + task.OrgCode
 		fp = fp + task.UserCode
