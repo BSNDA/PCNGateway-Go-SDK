@@ -1,0 +1,8 @@
+{
+  "nodeApi": "http://192.168.1.60:17502",
+  "userCode": "user0001",
+  "appCode": "app001",
+  "userPrivateKey": "-----BEGIN PRIVATE KEY-----\nMIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQgdEteON4eEPho9GVeDmi9\nPlw7HzI7EGUB2FmbLtbgbPChRANCAAQ1UfhbyOfasIlSgf15buSil1pGhDb9Fpuy\nT3bmAVdTJFpIMBCT0iHldH9+7em4X2iX7tatVPcv4kq3BDkRLqJ4\n-----END PRIVATE KEY-----",
+  "bsnPublicKey": "-----BEGIN PUBLIC KEY-----\n\tMFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEDW9srwJ97PuwNTXKpCBLz+Kgp8Bo\n\tKS/i2zlbzA3gnrZPKjh8jfh++exUmliaJ1qlzeNeXHyEbV31Rqk4+Go3Tw==\n\t-----END PUBLIC KEY-----",
+  "mspPath":"./msp"
+}

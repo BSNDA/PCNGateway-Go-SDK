@@ -108,7 +108,7 @@ func (c *Config) Init() error {
 
 		reqData.Header = c.GetReqHeader()
 
-		reqData.Body = req.AppInfoReqDataBody{}
+		//reqData.Body = req.AppInfoReqDataBody{}
 		res, err := app.GetAppInfo(&reqData, c.nodeApi, c.httpCert)
 
 		if err != nil {

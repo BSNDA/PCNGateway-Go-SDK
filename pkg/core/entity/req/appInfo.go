@@ -4,7 +4,7 @@ import "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
 
 type AppInfoReqData struct {
 	base.BaseReqModel
-	Body AppInfoReqDataBody `json:"body"`
+	Body interface{} `json:"body,omitempty"`
 }
 
 type AppInfoReqDataBody struct {
