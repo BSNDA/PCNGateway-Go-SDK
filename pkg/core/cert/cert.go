@@ -7,20 +7,24 @@ import (
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"encoding/pem"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/eth"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/keystore"
-	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/bccsp"
-	"github.com/cloudflare/cfssl/csr"
-	"github.com/cloudflare/cfssl/helpers"
-	"github.com/tjfoc/gmsm/sm2"
+	"github.com/BSNDA/bsn-sdk-crypto/keystore"
+	"github.com/BSNDA/bsn-sdk-crypto/keystore/key"
 	"net"
 	"net/mail"
 	"net/url"
+
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
+	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/bccsp"
+	"github.com/BSNDA/bsn-sdk-crypto/crypto/eth"
+	ksecdsa "github.com/BSNDA/bsn-sdk-crypto/keystore/ecdsa"
+	kssm "github.com/BSNDA/bsn-sdk-crypto/keystore/sm"
+	"github.com/cloudflare/cfssl/csr"
+	"github.com/cloudflare/cfssl/helpers"
+	"github.com/tjfoc/gmsm/sm2"
 )
 
-func GetCSRPEM(name string, algorithmType enum.App_AlgorithmType, ks bccsp.KeyStore) (string, bccsp.Key, error) {
+func GetCSRPEM(name string, algorithmType enum.App_AlgorithmType, ks key.KeyStore) (string, key.Key, error) {
 
 	cr := &csr.CertificateRequest{}
 	cr.CN = name
@@ -30,11 +34,11 @@ func GetCSRPEM(name string, algorithmType enum.App_AlgorithmType, ks bccsp.KeySt
 		O:  "Bsn",
 	})
 	var keyOpts bccsp.KeyGenOpts
-	keyOpts = &keystore.ECDSAP256KeyGenOpts{Temporary: true}
+	keyOpts = &ksecdsa.ECDSAP256KeyGenOpts{Temporary: true}
 
 	if algorithmType == enum.AppAlgorithmType_SM2 {
 		cr.KeyRequest = newSm2BasicKeyRequest()
-		keyOpts = &keystore.SM2KeyGenOpts{Temporary: true}
+		keyOpts = &kssm.SM2KeyGenOpts{Temporary: true}
 	}
 
 	key, cspSigner, err := keystore.BCCSPKeyRequestGenerate(ks, keyOpts)

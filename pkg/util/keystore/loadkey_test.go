@@ -6,6 +6,7 @@ import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/userstore"
+	kscert "github.com/BSNDA/bsn-sdk-crypto/keystore/cert"
 	"io/ioutil"
 	"strings"
 	"testing"
@@ -44,7 +45,7 @@ func TestCertService_SaveUserCert(t *testing.T) {
 		}
 		cert := string(bytes)
 		println(cert)
-		key, err := ImportCert(bytes)
+		key, err := kscert.ImportCert(bytes)
 		if err != nil {
 
 		}

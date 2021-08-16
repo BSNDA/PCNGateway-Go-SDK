@@ -1,24 +1,23 @@
 package fabric
 
 import (
-	"crypto/ecdsa"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	userreq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/user"
 	userres "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/fabric/user"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/sign"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/secp256r1"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/sm"
-	"github.com/tjfoc/gmsm/sm2"
+	"github.com/BSNDA/bsn-sdk-crypto/crypto/secp256r1"
+	"github.com/BSNDA/bsn-sdk-crypto/crypto/sm"
 
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/cert"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/keystore"
 
 	"encoding/json"
 	"fmt"
+	ksecdsa "github.com/BSNDA/bsn-sdk-crypto/keystore/ecdsa"
+	kssm "github.com/BSNDA/bsn-sdk-crypto/keystore/sm"
 
 	"github.com/wonderivan/logger"
 )
@@ -82,12 +81,12 @@ func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) error {
 		var sh sign.SignHandle
 
 		if c.Config.GetAppInfo().AlgorithmType == enum.AppAlgorithmType_SM2 {
-			pk = keystore.GetSmPrivateKey(key)
-			sh = sm.NewTransUserSMHandle(pk.(*sm2.PrivateKey))
+			pk = kssm.GetSmPrivateKey(key)
+			sh = sm.NewTransUserSMHandle(kssm.GetSmPrivateKey(key))
 
 		} else {
-			pk = keystore.GetECDSAPrivateKey(key)
-			sh = secp256r1.NewTransUserR1Handle(pk.(*ecdsa.PrivateKey))
+			pk = ksecdsa.GetECDSAPrivateKey(key)
+			sh = secp256r1.NewTransUserR1Handle(ksecdsa.GetECDSAPrivateKey(key))
 		}
 		user := &msp.UserData{
 			UserName:              enrollBody.Name,

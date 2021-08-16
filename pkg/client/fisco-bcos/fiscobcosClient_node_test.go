@@ -257,7 +257,7 @@ func TestFiscoBcosClient_Trans(t *testing.T) {
 	args = append(args, "s0604")
 	pr := new(big.Int).SetInt64(5)
 	args = append(args, pr)
-	args = append(args, "aa")
+	args = append(args, "[0xf,0x0]")
 
 	body := nodereq.TransData{
 		UserName: name,

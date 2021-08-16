@@ -5,7 +5,7 @@ import (
 	"fmt"
 	config2 "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/config"
 	req "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/node"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto"
+	"github.com/BSNDA/bsn-sdk-crypto/common"
 	"testing"
 	"time"
 )
@@ -21,7 +21,6 @@ func getFabricClient(t *testing.T) *FabricClient {
 	if err != nil {
 		t.Fatal(err)
 	}
-	//fmt.Println("cert", config.GetCert())
 	fabricClient, err := InitFabricClient(config)
 
 	if err != nil {
@@ -68,7 +67,7 @@ func TestFabricClient_ReqChainCode(t *testing.T) {
 	//args = append(args, "test2020104")
 	args = append(args, "{\"baseKey\":\"test20201222\",\"baseValue\":\"this is string11 \"}")
 
-	nonce, _ := crypto.GetRandomNonce()
+	nonce, _ := common.GetRandomNonce()
 
 	body := req.TransReqDataBody{
 		UserName:     name,

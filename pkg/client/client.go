@@ -6,9 +6,9 @@ import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/sign"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/secp256k1"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/secp256r1"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/sm"
+	"github.com/BSNDA/bsn-sdk-crypto/crypto/secp256k1"
+	"github.com/BSNDA/bsn-sdk-crypto/crypto/secp256r1"
+	"github.com/BSNDA/bsn-sdk-crypto/crypto/sm"
 	"github.com/wonderivan/logger"
 )
 

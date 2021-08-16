@@ -1,14 +1,16 @@
 package keystore
 
 import (
-	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/bccsp"
-	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/bccsp/utils"
+	"github.com/BSNDA/bsn-sdk-crypto/keystore/key"
+	"github.com/BSNDA/bsn-sdk-crypto/utils"
 	"github.com/tjfoc/gmsm/sm2"
 	"github.com/wonderivan/logger"
 
+	ksecdsa "github.com/BSNDA/bsn-sdk-crypto/keystore/ecdsa"
+	kssm "github.com/BSNDA/bsn-sdk-crypto/keystore/sm"
+
 	"bytes"
 	"crypto/ecdsa"
-	"crypto/rsa"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -23,7 +25,7 @@ import (
 // The key store can be encrypted if a non-empty password is specified.
 // It can be also be set as read only. In this case, any store operation
 // will be forbidden
-func NewFileBasedKeyStore(pwd []byte, path string, readOnly bool) (bccsp.KeyStore, error) {
+func NewFileBasedKeyStore(pwd []byte, path string, readOnly bool) (key.KeyStore, error) {
 	ks := &fileBasedKeyStore{}
 	return ks, ks.Init(pwd, path, readOnly)
 }
@@ -97,7 +99,7 @@ func (ks *fileBasedKeyStore) ReadOnly() bool {
 }
 
 // GetKey returns a key object whose SKI is the one passed.
-func (ks *fileBasedKeyStore) GetKey(ski []byte) (bccsp.Key, error) {
+func (ks *fileBasedKeyStore) GetKey(ski []byte) (key.Key, error) {
 	// Validate arguments
 	if len(ski) == 0 {
 		return nil, errors.New("Invalid SKI. Cannot be of zero length.")
@@ -105,14 +107,14 @@ func (ks *fileBasedKeyStore) GetKey(ski []byte) (bccsp.Key, error) {
 
 	suffix := ks.getSuffix(hex.EncodeToString(ski))
 	switch suffix {
-	case "key":
-		// Load the key
-		key, err := ks.loadKey(hex.EncodeToString(ski))
-		if err != nil {
-			return nil, fmt.Errorf("Failed loading key [%x] [%s]", ski, err)
-		}
-
-		return &aesPrivateKey{key, false}, nil
+	//case "key":
+	//	// Load the key
+	//	key, err := ks.loadKey(hex.EncodeToString(ski))
+	//	if err != nil {
+	//		return nil, fmt.Errorf("Failed loading key [%x] [%s]", ski, err)
+	//	}
+	//
+	//	return &aesPrivateKey{key, false}, nil
 	case "sk":
 		// Load the private key
 		key, err := ks.loadPrivateKey(hex.EncodeToString(ski))
@@ -122,11 +124,11 @@ func (ks *fileBasedKeyStore) GetKey(ski []byte) (bccsp.Key, error) {
 
 		switch key.(type) {
 		case *ecdsa.PrivateKey:
-			return &ecdsaPrivateKey{key.(*ecdsa.PrivateKey)}, nil
-		case *rsa.PrivateKey:
-			return &rsaPrivateKey{key.(*rsa.PrivateKey)}, nil
+			return ksecdsa.NewEcdsaPrivateKey(key.(*ecdsa.PrivateKey)), nil
+		//case *rsa.PrivateKey:
+		//	return &rsaPrivateKey{key.(*rsa.PrivateKey)}, nil
 		case *sm2.PrivateKey:
-			return &smPrivateKey{key.(*sm2.PrivateKey)}, nil
+			return kssm.NewSMPrivateKey(key.(*sm2.PrivateKey)), nil
 		default:
 			return nil, errors.New("Secret key type not recognized")
 		}
@@ -139,9 +141,9 @@ func (ks *fileBasedKeyStore) GetKey(ski []byte) (bccsp.Key, error) {
 
 		switch key.(type) {
 		case *ecdsa.PublicKey:
-			return &ecdsaPublicKey{key.(*ecdsa.PublicKey)}, nil
-		case *rsa.PublicKey:
-			return &rsaPublicKey{key.(*rsa.PublicKey)}, nil
+			return ksecdsa.NewEcdsaPublicKey(key.(*ecdsa.PublicKey)), nil
+		case *sm2.PublicKey:
+			return kssm.NewSMPublicKey(key.(*sm2.PublicKey)), nil
 		default:
 			return nil, errors.New("Public key type not recognized")
 		}
@@ -152,7 +154,7 @@ func (ks *fileBasedKeyStore) GetKey(ski []byte) (bccsp.Key, error) {
 
 // StoreKey stores the key k in this KeyStore.
 // If this KeyStore is read only then the method will fail.
-func (ks *fileBasedKeyStore) StoreKey(k bccsp.Key) (err error) {
+func (ks *fileBasedKeyStore) StoreKey(k key.Key) (err error) {
 	if ks.readOnly {
 		return errors.New("Read only KeyStore.")
 	}
@@ -161,55 +163,55 @@ func (ks *fileBasedKeyStore) StoreKey(k bccsp.Key) (err error) {
 		return errors.New("Invalid key. It must be different from nil.")
 	}
 	switch k.(type) {
-	case *ecdsaPrivateKey:
-		kk := k.(*ecdsaPrivateKey)
-		err = ks.storePrivateKey(hex.EncodeToString(k.SKI()), kk.privKey)
+	case *ksecdsa.EcdsaPrivateKey:
+		kk := k.(*ksecdsa.EcdsaPrivateKey)
+		err = ks.storePrivateKey(hex.EncodeToString(k.SKI()), kk.GetPrivateKey())
 		if err != nil {
 			return fmt.Errorf("Failed storing ECDSA private key [%s]", err)
 		}
-	case *smPrivateKey:
-		kk := k.(*smPrivateKey)
-		err = ks.storePrivateKey(hex.EncodeToString(k.SKI()), kk.privKey)
+	case *kssm.SMPrivateKey:
+		kk := k.(*kssm.SMPrivateKey)
+		err = ks.storePrivateKey(hex.EncodeToString(k.SKI()), kk.GetPrivateKey())
 		if err != nil {
 			return fmt.Errorf("Failed storing ECDSA private key [%s]", err)
 		}
-	case *ecdsaPublicKey:
-		kk := k.(*ecdsaPublicKey)
+	case *ksecdsa.EcdsaPublicKey:
+		kk := k.(*ksecdsa.EcdsaPublicKey)
 
-		err = ks.storePublicKey(hex.EncodeToString(k.SKI()), kk.pubKey)
+		err = ks.storePublicKey(hex.EncodeToString(k.SKI()), kk.GetPublicKey())
 		if err != nil {
 			return fmt.Errorf("Failed storing ECDSA public key [%s]", err)
 		}
-	case *smPublicKey:
-		kk := k.(*smPublicKey)
+	case *kssm.SMPublicKey:
+		kk := k.(*kssm.SMPublicKey)
 
-		err = ks.storePublicKey(hex.EncodeToString(k.SKI()), kk.pubKey)
+		err = ks.storePublicKey(hex.EncodeToString(k.SKI()), kk.GetPublicKey())
 		if err != nil {
 			return fmt.Errorf("Failed storing ECDSA public key [%s]", err)
 		}
-	case *rsaPrivateKey:
-		kk := k.(*rsaPrivateKey)
-
-		err = ks.storePrivateKey(hex.EncodeToString(k.SKI()), kk.privKey)
-		if err != nil {
-			return fmt.Errorf("Failed storing RSA private key [%s]", err)
-		}
-
-	case *rsaPublicKey:
-		kk := k.(*rsaPublicKey)
-
-		err = ks.storePublicKey(hex.EncodeToString(k.SKI()), kk.pubKey)
-		if err != nil {
-			return fmt.Errorf("Failed storing RSA public key [%s]", err)
-		}
-
-	case *aesPrivateKey:
-		kk := k.(*aesPrivateKey)
-
-		err = ks.storeKey(hex.EncodeToString(k.SKI()), kk.privKey)
-		if err != nil {
-			return fmt.Errorf("Failed storing AES key [%s]", err)
-		}
+	//case *rsaPrivateKey:
+	//	kk := k.(*rsaPrivateKey)
+	//
+	//	err = ks.storePrivateKey(hex.EncodeToString(k.SKI()), kk.privKey)
+	//	if err != nil {
+	//		return fmt.Errorf("Failed storing RSA private key [%s]", err)
+	//	}
+	//
+	//case *rsaPublicKey:
+	//	kk := k.(*rsaPublicKey)
+	//
+	//	err = ks.storePublicKey(hex.EncodeToString(k.SKI()), kk.pubKey)
+	//	if err != nil {
+	//		return fmt.Errorf("Failed storing RSA public key [%s]", err)
+	//	}
+	//
+	//case *aesPrivateKey:
+	//	kk := k.(*aesPrivateKey)
+	//
+	//	err = ks.storeKey(hex.EncodeToString(k.SKI()), kk.privKey)
+	//	if err != nil {
+	//		return fmt.Errorf("Failed storing AES key [%s]", err)
+	//	}
 
 	default:
 		return fmt.Errorf("Key type not reconigned [%s]", k)
@@ -218,7 +220,7 @@ func (ks *fileBasedKeyStore) StoreKey(k bccsp.Key) (err error) {
 	return
 }
 
-func (ks *fileBasedKeyStore) searchKeystoreForSKI(ski []byte) (k bccsp.Key, err error) {
+func (ks *fileBasedKeyStore) searchKeystoreForSKI(ski []byte) (k key.Key, err error) {
 
 	files, _ := ioutil.ReadDir(ks.path)
 	for _, f := range files {
@@ -242,9 +244,9 @@ func (ks *fileBasedKeyStore) searchKeystoreForSKI(ski []byte) (k bccsp.Key, err 
 
 		switch key.(type) {
 		case *ecdsa.PrivateKey:
-			k = &ecdsaPrivateKey{key.(*ecdsa.PrivateKey)}
-		case *rsa.PrivateKey:
-			k = &rsaPrivateKey{key.(*rsa.PrivateKey)}
+			k = ksecdsa.NewEcdsaPrivateKey(key.(*ecdsa.PrivateKey))
+		case *sm2.PrivateKey:
+			k = kssm.NewSMPrivateKey(key.(*sm2.PrivateKey))
 		default:
 			continue
 		}

@@ -2,7 +2,7 @@ package fiscobcos
 
 import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto"
+	cryptocomm "github.com/BSNDA/bsn-sdk-crypto/common"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -58,7 +58,7 @@ func TransData(contractabi, contractAddress string, funcName string, args []inte
 	}
 	toAddress := common.HexToAddress(contractAddress)
 
-	nonce, _ := crypto.GetRandomBigInt()
+	nonce, _ := cryptocomm.GetRandomBigInt()
 
 	if err != nil {
 		return "", false, err

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans/cita/pb"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/sm"
+	"github.com/BSNDA/bsn-sdk-crypto/crypto/sm"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/golang/protobuf/proto"

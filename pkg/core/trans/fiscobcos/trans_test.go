@@ -13,7 +13,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/eth"
+	"github.com/BSNDA/bsn-sdk-crypto/crypto/eth"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"

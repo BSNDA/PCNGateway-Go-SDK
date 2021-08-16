@@ -7,7 +7,9 @@ import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/keystore"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/userstore"
-	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/bccsp"
+	cryks "github.com/BSNDA/bsn-sdk-crypto/keystore/key"
+
+	store "github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/keystore"
 	"github.com/wonderivan/logger"
 )
 
@@ -20,7 +22,7 @@ func InitFabricClient(config *config.Config) (*FabricClient, error) {
 		return nil, err
 	}
 	//generate a private key handler
-	ks, err := keystore.NewFileBasedKeyStore(nil, config.GetKSPath(), false)
+	ks, err := store.NewFileBasedKeyStore(nil, config.GetKSPath(), false)
 
 	if err != nil {
 		logger.Error("keystore initialization failed")
@@ -54,7 +56,7 @@ func InitFabricClient(config *config.Config) (*FabricClient, error) {
 
 type FabricClient struct {
 	client.Client
-	ks    bccsp.KeyStore
+	ks    cryks.KeyStore
 	us    userstore.UserStore
 	Users map[string]*msp.UserData
 }

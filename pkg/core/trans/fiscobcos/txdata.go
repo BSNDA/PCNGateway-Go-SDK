@@ -1,8 +1,8 @@
 package fiscobcos
 
 import (
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/eth"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/crypto/sm"
+	"github.com/BSNDA/bsn-sdk-crypto/crypto/eth"
+	"github.com/BSNDA/bsn-sdk-crypto/crypto/sm"
 
 	"crypto/ecdsa"
 	"github.com/ethereum/go-ethereum/common"
