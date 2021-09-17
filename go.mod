@@ -3,7 +3,7 @@ module github.com/BSNDA/PCNGateway-Go-SDK
 go 1.14
 
 require (
-	github.com/BSNDA/bsn-sdk-crypto v1.0.1-0.20210917071809-d091a8318c20
+	github.com/BSNDA/bsn-sdk-crypto v1.0.1-0.20210917074653-b741d5d8fcae
 	github.com/cloudflare/cfssl v1.4.1
 	github.com/ethereum/go-ethereum v1.9.18
 	github.com/golang/protobuf v1.4.2
