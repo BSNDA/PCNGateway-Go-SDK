@@ -127,7 +127,7 @@ func ParseTrans(data string, contractAbi string, sm bool) (contractAddress, func
 		return
 	}
 
-	sign := &txsign{}
+	sign := &txdata{}
 
 	err = rlp.DecodeBytes(dataByte, sign)
 	if err != nil {
