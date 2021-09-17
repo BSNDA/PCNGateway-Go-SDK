@@ -2,8 +2,9 @@ package cita
 
 import (
 	"fmt"
-	req "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/cita/user"
 	"testing"
+
+	req "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/cita/user"
 )
 
 func TestCitaClient_RegisterUser(t *testing.T) {

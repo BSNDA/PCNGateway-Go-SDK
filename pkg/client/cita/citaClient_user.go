@@ -3,15 +3,16 @@ package cita
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path"
+
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/cert"
 	userReq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/cita/user"
 	userRes "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/cita/user"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 	"github.com/wonderivan/logger"
-	"io/ioutil"
-	"os"
-	"path"
 )
 
 func (c *CitaClient) RegisterUser(body userReq.RegisterReqDataBody) (*userRes.RegisterResData, error) {

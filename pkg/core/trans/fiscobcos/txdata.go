@@ -3,6 +3,7 @@ package fiscobcos
 import (
 	"github.com/BSNDA/bsn-sdk-crypto/crypto/eth"
 	"github.com/BSNDA/bsn-sdk-crypto/crypto/sm"
+	"golang.org/x/crypto/sha3"
 
 	"crypto/ecdsa"
 	"github.com/ethereum/go-ethereum/common"
@@ -16,31 +17,13 @@ import (
 type Transaction struct {
 	data txdata
 
-	sign txsign
+	//sign txsign
 
 	// caches
 	hash     atomic.Value
 	size     atomic.Value
 	from     atomic.Value
 	smcrypto bool
-}
-
-type txsign struct {
-	AccountNonce *big.Int        `json:"nonce"    gencodec:"required"`
-	Price        *big.Int        `json:"gasPrice"   gencodec:"required"`
-	GasLimit     *big.Int        `json:"gas"        gencodec:"required"`
-	BlockLimit   *big.Int        `json:"blocklimit" gencodec:"required"`
-	Recipient    *common.Address `json:"to"         rlp:"nil"` // nil means contract creation
-	Amount       *big.Int        `json:"value"      gencodec:"required"`
-	Payload      []byte          `json:"input"      gencodec:"required"`
-	// for fisco bcos 2.0
-	ChainID   *big.Int `json:"chainId"    gencodec:"required"`
-	GroupID   *big.Int `json:"groupId"    gencodec:"required"`
-	ExtraData []byte   `json:"extraData"  gencodec:"required"` // rlp:"nil"
-
-	V *big.Int `json:"v" gencodec:"required"`
-	R *big.Int `json:"r" gencodec:"required"`
-	S *big.Int `json:"s" gencodec:"required"`
 }
 
 type txdata struct {
@@ -56,10 +39,9 @@ type txdata struct {
 	GroupID   *big.Int `json:"groupId"    gencodec:"required"`
 	ExtraData []byte   `json:"extraData"  gencodec:"required"` // rlp:"nil"
 
-	// Signature values
-
-	// This is only used when marshaling to JSON.
-	Hash *common.Hash `json:"hash" rlp:"-"`
+	V *big.Int `json:"v" gencodec:"required"`
+	R *big.Int `json:"r" gencodec:"required"`
+	S *big.Int `json:"s" gencodec:"required"`
 }
 
 // NewTransaction returns a new transaction
@@ -82,9 +64,9 @@ func newTransaction(nonce *big.Int, to *common.Address, amount *big.Int, gasLimi
 		GroupID:      new(big.Int),
 		ExtraData:    extraData,
 
-		//V:           nil,
-		//R:            nil,
-		//S:            nil,
+		V: new(big.Int),
+		R: new(big.Int),
+		S: new(big.Int),
 	}
 	if amount != nil {
 		d.Amount.Set(amount)
@@ -102,20 +84,7 @@ func newTransaction(nonce *big.Int, to *common.Address, amount *big.Int, gasLimi
 		d.ExtraData = extraData
 	}
 
-	sign := txsign{
-		AccountNonce: d.AccountNonce,
-		Recipient:    d.Recipient,
-		Payload:      d.Payload,
-		Amount:       d.Amount,
-		GasLimit:     d.GasLimit,
-		BlockLimit:   d.BlockLimit,
-		Price:        d.Price,
-		ChainID:      d.ChainID,
-		GroupID:      d.GroupID,
-		ExtraData:    d.ExtraData,
-	}
-
-	return &Transaction{data: d, sign: sign, smcrypto: smcrypto}
+	return &Transaction{data: d, smcrypto: smcrypto}
 }
 
 // EncodeRLP implements rlp.Encoder
@@ -145,48 +114,65 @@ func (tx *Transaction) Sign(priKey *ecdsa.PrivateKey, isSM bool) []byte {
 
 		r, s, v, _, _ := eth.SignData(priKey, hash)
 
-		tx.sign.V = v
-		tx.sign.R = r
-		tx.sign.S = s
+		tx.data.V = v
+		tx.data.R = r
+		tx.data.S = s
 	}
 
-	txd, _ := rlp.EncodeToBytes(tx.sign)
+	txd, _ := rlp.EncodeToBytes(tx.data)
 	return txd
 
 }
 
 func (tx *Transaction) SignData(priKey interface{}) ([]byte, error) {
-	txb, _ := rlp.EncodeToBytes(tx.data)
-
+	//txb, _ := rlp.EncodeToBytes(tx.data)
+	txb := Hash(tx).Bytes()
 	if tx.smcrypto {
-
 		pk := priKey.(*sm2.PrivateKey)
-
 		r, s, pub, err := sm.SignData(pk, txb)
-
 		if err != nil {
 			return nil, err
 		}
 
-		tx.sign.V = pub
-		tx.sign.R = r
-		tx.sign.S = s
+		tx.data.V = pub
+		tx.data.R = r
+		tx.data.S = s
 	} else {
-
-		hash, _ := eth.Hash(txb)
-
-		r, s, v, _, err := eth.SignData(priKey.(*ecdsa.PrivateKey), hash)
+		//hash, _ := eth.Hash(txb)
+		r, s, v, _, err := eth.SignData(priKey.(*ecdsa.PrivateKey), txb)
 
 		if err != nil {
 			return nil, err
 		}
 
-		tx.sign.V = v
-		tx.sign.R = r
-		tx.sign.S = s
+		tx.data.V = v
+		tx.data.R = r
+		tx.data.S = s
 	}
 
-	txd, _ := rlp.EncodeToBytes(tx.sign)
+	txd, _ := rlp.EncodeToBytes(tx.data)
 	return txd, nil
 
+}
+
+func rlpHash(x interface{}) (h common.Hash) {
+	hw := sha3.NewLegacyKeccak256()
+	rlp.Encode(hw, x)
+	hw.Sum(h[:0])
+	return h
+}
+
+func Hash(tx *Transaction) common.Hash {
+	return rlpHash([]interface{}{
+		tx.data.AccountNonce,
+		tx.data.Price,
+		tx.data.GasLimit,
+		tx.data.BlockLimit,
+		tx.data.Recipient,
+		tx.data.Amount,
+		tx.data.Payload,
+		tx.data.ChainID,
+		tx.data.GroupID,
+		tx.data.ExtraData,
+	})
 }

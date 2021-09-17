@@ -1,25 +1,25 @@
 package fabric
 
 import (
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
-	userreq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/user"
-	userres "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/fabric/user"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/sign"
+	"encoding/json"
+	"fmt"
+
+	"github.com/wonderivan/logger"
+
 	"github.com/BSNDA/bsn-sdk-crypto/crypto/secp256r1"
 	"github.com/BSNDA/bsn-sdk-crypto/crypto/sm"
+	ksecdsa "github.com/BSNDA/bsn-sdk-crypto/keystore/ecdsa"
+	kssm "github.com/BSNDA/bsn-sdk-crypto/keystore/sm"
 
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/cert"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
+	userreq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/user"
+	userres "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/fabric/user"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/sign"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
-
-	"encoding/json"
-	"fmt"
-	ksecdsa "github.com/BSNDA/bsn-sdk-crypto/keystore/ecdsa"
-	kssm "github.com/BSNDA/bsn-sdk-crypto/keystore/sm"
-
-	"github.com/wonderivan/logger"
 )
 
 func (c *FabricClient) RegisterUser(body userreq.RegisterReqDataBody) (*userres.RegisterResData, error) {

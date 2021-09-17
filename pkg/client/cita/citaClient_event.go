@@ -2,6 +2,7 @@ package cita
 
 import (
 	"encoding/json"
+
 	eventreq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/cita/event"
 	eventres "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/cita/event"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"

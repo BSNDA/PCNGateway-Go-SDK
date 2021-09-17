@@ -2,8 +2,9 @@ package cita
 
 import (
 	"fmt"
-	eventreq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/cita/event"
 	"testing"
+
+	eventreq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/cita/event"
 )
 
 func TestCitaClient_EventRegister(t *testing.T) {

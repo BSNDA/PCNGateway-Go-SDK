@@ -105,6 +105,7 @@ bdKnwmu3hgguwRHRnq21+KmuY96pY5df3eiNNHO73hQL4Bjz/AxU/pne6w==
 	}
 	t.Log(fmt.Sprintf("txid:%s", res.Body.TxId))
 }
+
 // 上传公钥模式query合约
 // initiator:代表xupchain的账户地址；可调用方法GetAddressFromPublicKey生成address信息，文件地址（trans/xuperchain/account/account_ext.go）
 func TestXuperChainClient_SdkTran_Get(t *testing.T) {

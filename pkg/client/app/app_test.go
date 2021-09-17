@@ -2,9 +2,10 @@ package app
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req"
-	"testing"
 )
 
 func TestGetAppInfo(t *testing.T) {

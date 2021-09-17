@@ -3,6 +3,7 @@ package cita
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	nodereq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/cita/node"

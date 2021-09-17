@@ -2,8 +2,9 @@ package fabric
 
 import (
 	"fmt"
-	req "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/event"
 	"testing"
+
+	req "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/event"
 )
 
 func TestFabricClient_EventRegister(t *testing.T) {

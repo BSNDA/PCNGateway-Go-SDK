@@ -1,12 +1,13 @@
 package cita
 
 import (
+	"strconv"
+
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/client"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/config"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	"github.com/wonderivan/logger"
-	"strconv"
 )
 
 func NewCitaClient(config *config.Config) (*CitaClient, error) {

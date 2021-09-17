@@ -3,11 +3,12 @@ package fabric
 import (
 	"encoding/base64"
 	"fmt"
+	"testing"
+	"time"
+
 	config2 "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/config"
 	req "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/node"
 	"github.com/BSNDA/bsn-sdk-crypto/common"
-	"testing"
-	"time"
 )
 
 func getFabricClient(t *testing.T) *FabricClient {

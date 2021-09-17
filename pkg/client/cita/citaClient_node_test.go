@@ -4,11 +4,12 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	config2 "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/config"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	nodereq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/cita/node"
-	"testing"
 )
 
 func getCitaClient(t *testing.T) *CitaClient {
