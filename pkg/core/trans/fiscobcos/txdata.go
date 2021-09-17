@@ -1,8 +1,10 @@
 package fiscobcos
 
 import (
+	"bytes"
 	"github.com/BSNDA/bsn-sdk-crypto/crypto/eth"
 	"github.com/BSNDA/bsn-sdk-crypto/crypto/sm"
+	"github.com/tjfoc/gmsm/sm3"
 	"golang.org/x/crypto/sha3"
 
 	"crypto/ecdsa"
@@ -126,8 +128,10 @@ func (tx *Transaction) Sign(priKey *ecdsa.PrivateKey, isSM bool) []byte {
 
 func (tx *Transaction) SignData(priKey interface{}) ([]byte, error) {
 	//txb, _ := rlp.EncodeToBytes(tx.data)
-	txb := Hash(tx).Bytes()
+
 	if tx.smcrypto {
+
+		txb := SM3HashNonSig(tx).Bytes()
 		pk := priKey.(*sm2.PrivateKey)
 		r, s, pub, err := sm.SignData(pk, txb)
 		if err != nil {
@@ -138,6 +142,7 @@ func (tx *Transaction) SignData(priKey interface{}) ([]byte, error) {
 		tx.data.R = r
 		tx.data.S = s
 	} else {
+		txb := Hash(tx).Bytes()
 		//hash, _ := eth.Hash(txb)
 		r, s, v, _, err := eth.SignData(priKey.(*ecdsa.PrivateKey), txb)
 
@@ -175,4 +180,27 @@ func Hash(tx *Transaction) common.Hash {
 		tx.data.GroupID,
 		tx.data.ExtraData,
 	})
+}
+
+func SM3HashNonSig(tx *Transaction) (h common.Hash) {
+	var src []byte
+	buf := bytes.NewBuffer(src)
+	rlp.Encode(buf, []interface{}{
+		tx.data.AccountNonce,
+		tx.data.Price,
+		tx.data.GasLimit,
+		tx.data.BlockLimit,
+		tx.data.Recipient,
+		tx.data.Amount,
+		tx.data.Payload,
+		tx.data.ChainID,
+		tx.data.GroupID,
+		tx.data.ExtraData,
+	})
+
+	h3 := sm3.New()
+	h3.Write(buf.Bytes())
+	hash := h3.Sum(nil)
+	copy(h[:], hash)
+	return
 }
