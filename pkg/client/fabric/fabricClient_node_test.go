@@ -104,6 +104,21 @@ func TestFabricClient_GetTransInfo(t *testing.T) {
 	}
 
 }
+func TestFabricClient_GetTransDataInfo(t *testing.T) {
+	fabricClient := getFabricClient(t)
+
+	tx := req.TxTransReqDataBody{
+		TxId: "b448496c1f161bd62709915ed3cdb79d595fc585dbd1237e60fe2d3911410e06",
+	}
+
+	res, _ := fabricClient.GetTransData(tx)
+
+	v := fabricClient.Verify(res.Mac, res.GetEncryptionValue())
+	fmt.Println(v)
+
+	fmt.Println(res)
+
+}
 
 func TestFabricClient_GetBlockInfo(t *testing.T) {
 
@@ -131,4 +146,22 @@ func TestFabricClient_GetLedgerInfo(t *testing.T) {
 
 	fmt.Println(res)
 	fmt.Println(fabricClient.Verify(res.Mac, res.GetEncryptionValue()))
+}
+
+func TestFabricClient_GetBlockDataInfo(t *testing.T) {
+
+	fabricClient := getFabricClient(t)
+
+	tx := req.BlockReqDataBody{
+
+		BlockNumber: 2,
+	}
+
+	res, _ := fabricClient.GetBlockData(tx)
+
+	v := fabricClient.Verify(res.Mac, res.GetEncryptionValue())
+	fmt.Println(v)
+
+	fmt.Println(res)
+
 }
