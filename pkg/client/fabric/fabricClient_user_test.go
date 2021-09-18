@@ -7,11 +7,11 @@ import (
 )
 
 func TestFabricClient_RegisterUser(t *testing.T) {
-
 	fabricClient := getFabricClient(t)
 	body := req.RegisterReqDataBody{
-		Name:   "user20201214",
-		Secret: "123456",
+		Name:             "user202109171436",
+		Secret:           "123456",
+		ExtendProperties: "{'key1':'abc'}", //用户拓展属性，json格式，非必填
 	}
 
 	res, err := fabricClient.RegisterUser(body)
@@ -30,7 +30,7 @@ func TestFabricClient_EnrollUser(t *testing.T) {
 	fabricClient := getFabricClient(t)
 
 	body := req.RegisterReqDataBody{
-		Name:   "user20201214",
+		Name:   "user20210811",
 		Secret: "123456",
 	}
 

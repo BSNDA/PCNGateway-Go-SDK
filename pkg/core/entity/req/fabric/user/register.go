@@ -10,8 +10,9 @@ type RegisterReqData struct {
 }
 
 type RegisterReqDataBody struct {
-	Name   string `json:"name"`
-	Secret string `json:"secret"`
+	Name             string `json:"name"`
+	Secret           string `json:"secret"`
+	ExtendProperties string `json:"extendProperties"` //拓展属性
 }
 
 func (f *RegisterReqData) GetEncryptionValue() string {
@@ -19,6 +20,7 @@ func (f *RegisterReqData) GetEncryptionValue() string {
 
 	fp = fp + f.Body.Name
 	fp = fp + f.Body.Secret
+	fp = fp + f.Body.ExtendProperties
 
 	return fp
 

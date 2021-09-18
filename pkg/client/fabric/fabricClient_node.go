@@ -113,6 +113,32 @@ func (c *FabricClient) GetTransInfo(body nodereq.TxTransReqDataBody) (*noderes.T
 
 	return res, nil
 }
+func (c *FabricClient) GetTransData(body nodereq.TxTransReqDataBody) (*noderes.TranDataRes, error) {
+	url := c.GetURL("/api/fabric/v1/node/getTransdata")
+
+	data := &nodereq.TxTransReqData{}
+	data.Header = c.GetHeader()
+	data.Body = body
+	data.Mac = c.Sign(data.GetEncryptionValue())
+
+	reqBytes, _ := json.Marshal(data)
+
+	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	if err != nil {
+		logger.Error("gateway interface call failed：", err)
+		return nil, err
+	}
+	res := &noderes.TranDataRes{}
+
+	err = json.Unmarshal(resBytes, res)
+
+	if err != nil {
+		logger.Error("return parameter serialization failed：", err)
+		return nil, err
+	}
+
+	return res, nil
+}
 
 func (c *FabricClient) GetBlockInfo(body nodereq.BlockReqDataBody) (*noderes.BlockResData, error) {
 
@@ -133,6 +159,35 @@ func (c *FabricClient) GetBlockInfo(body nodereq.BlockReqDataBody) (*noderes.Blo
 	}
 
 	res := &noderes.BlockResData{}
+
+	err = json.Unmarshal(resBytes, res)
+
+	if err != nil {
+		logger.Error("return parameter serialization failed：", err)
+		return nil, err
+	}
+
+	return res, nil
+}
+func (c *FabricClient) GetBlockData(body nodereq.BlockReqDataBody) (*noderes.BlockDataRes, error) {
+
+	url := c.GetURL("/api/fabric/v1/node/getBlockData")
+
+	data := &nodereq.BlockReqData{}
+	data.Header = c.GetHeader()
+	data.Body = body
+	data.Mac = c.Sign(data.GetEncryptionValue())
+
+	reqBytes, _ := json.Marshal(data)
+
+	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+
+	if err != nil {
+		logger.Error("gateway interface call failed：", err)
+		return nil, err
+	}
+
+	res := &noderes.BlockDataRes{}
 
 	err = json.Unmarshal(resBytes, res)
 
