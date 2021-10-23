@@ -105,27 +105,6 @@ func (tx *Transaction) DecodeRLP(s *rlp.Stream) error {
 	return err
 }
 
-func (tx *Transaction) Sign(priKey *ecdsa.PrivateKey, isSM bool) []byte {
-	txb, _ := rlp.EncodeToBytes(tx.data)
-
-	if isSM {
-
-	} else {
-
-		hash, _ := eth.Hash(txb)
-
-		r, s, v, _, _ := eth.SignData(priKey, hash)
-
-		tx.data.V = v
-		tx.data.R = r
-		tx.data.S = s
-	}
-
-	txd, _ := rlp.EncodeToBytes(tx.data)
-	return txd
-
-}
-
 func (tx *Transaction) SignData(priKey interface{}) ([]byte, error) {
 	//txb, _ := rlp.EncodeToBytes(tx.data)
 

@@ -97,7 +97,7 @@ bQVByl2ZoXPc2dNsowENzM9d8+aBoXfUVVx8Si3bm81F9b3aBdBa
 		t.Fatal(err)
 	}
 
-	txd := tx.Sign(prikey, false)
+	txd, _ := tx.SignData(prikey)
 	s2 := hexutil.Encode(txd)
 
 	fmt.Println(s2)
