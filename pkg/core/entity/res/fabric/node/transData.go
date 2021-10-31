@@ -10,7 +10,7 @@ type TranDataRes struct {
 }
 
 type TranDataResBody struct {
-	TxId      string `json:"blockInfo"`
+	TxId      string `json:"txId"`
 	TransData string `json:"transData"`
 }
 
