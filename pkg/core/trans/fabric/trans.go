@@ -194,3 +194,19 @@ func getProposalPayload(data []byte) error {
 
 	return nil
 }
+
+func ConvertToTran(transData string) (*pb.ProcessedTransaction, error) {
+	transBytes, err := base64.StdEncoding.DecodeString(transData)
+	if err != nil {
+		return nil, errors.New("convert trans data has error")
+	}
+
+	trans := &pb.ProcessedTransaction{}
+
+	err = proto.Unmarshal(transBytes, trans)
+	if err != nil {
+		return nil, errors.New("convert trans bytes has error")
+	}
+
+	return trans, nil
+}
