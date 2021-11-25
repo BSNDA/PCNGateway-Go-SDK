@@ -10,6 +10,7 @@ import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 )
 
+// SdkTran Dapp transaction in key trust mode
 func (c *FabricClient) SdkTran(body nodereq.TransReqDataBody) (*noderes.TranResData, error) {
 
 	url := c.GetURL("/api/fabric/v1/node/trans")
@@ -60,6 +61,7 @@ func (c *FabricClient) SdkTran(body nodereq.TransReqDataBody) (*noderes.TranResD
 
 }
 
+// ReqChainCode Dapp transaction in public key upload mode
 func (c *FabricClient) ReqChainCode(body nodereq.TransReqDataBody) (*noderes.TranResData, error) {
 	url := c.GetURL("/api/fabric/v1/node/reqChainCode")
 
@@ -87,6 +89,7 @@ func (c *FabricClient) ReqChainCode(body nodereq.TransReqDataBody) (*noderes.Tra
 	return res, nil
 }
 
+// GetTransInfo query fabric transaction
 func (c *FabricClient) GetTransInfo(body nodereq.TxTransReqDataBody) (*noderes.TransactionResData, error) {
 	url := c.GetURL("/api/fabric/v1/node/getTransaction")
 
@@ -113,6 +116,9 @@ func (c *FabricClient) GetTransInfo(body nodereq.TxTransReqDataBody) (*noderes.T
 
 	return res, nil
 }
+
+// GetTransData  query fabric transaction,
+// but the return data is "peer.ProcessedTransaction" serialized bytes after Base64 encoding .
 func (c *FabricClient) GetTransData(body nodereq.TxTransReqDataBody) (*noderes.TranDataRes, error) {
 	url := c.GetURL("/api/fabric/v1/node/getTransdata")
 
@@ -140,6 +146,7 @@ func (c *FabricClient) GetTransData(body nodereq.TxTransReqDataBody) (*noderes.T
 	return res, nil
 }
 
+// GetBlockInfo query fabric block data
 func (c *FabricClient) GetBlockInfo(body nodereq.BlockReqDataBody) (*noderes.BlockResData, error) {
 
 	url := c.GetURL("/api/fabric/v1/node/getBlockInfo")
@@ -169,6 +176,9 @@ func (c *FabricClient) GetBlockInfo(body nodereq.BlockReqDataBody) (*noderes.Blo
 
 	return res, nil
 }
+
+// GetBlockData query fabric block data
+// but the return data is "common.Block" serialized bytes after Base64 encoding .
 func (c *FabricClient) GetBlockData(body nodereq.BlockReqDataBody) (*noderes.BlockDataRes, error) {
 
 	url := c.GetURL("/api/fabric/v1/node/getBlockData")
@@ -199,6 +209,7 @@ func (c *FabricClient) GetBlockData(body nodereq.BlockReqDataBody) (*noderes.Blo
 	return res, nil
 }
 
+// GetBlockData query fabric ledger data
 func (c *FabricClient) GetLedgerInfo() (*noderes.LedgerResData, error) {
 
 	url := c.GetURL("/api/fabric/v1/node/getLedgerInfo")

@@ -8,6 +8,7 @@ import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 )
 
+// GetAppInfo query basic information of Dapp
 func GetAppInfo(data *req.AppInfoReqData, baseApi string, cert string) (*res.AppInfoResData, error) {
 
 	url := baseApi + "/api/app/getAppInfo"
@@ -20,14 +21,14 @@ func GetAppInfo(data *req.AppInfoReqData, baseApi string, cert string) (*res.App
 		return nil, err
 	}
 
-	res := &res.AppInfoResData{}
+	resData := &res.AppInfoResData{}
 
-	err = json.Unmarshal(resBytes, res)
+	err = json.Unmarshal(resBytes, resData)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return res, nil
+	return resData, nil
 
 }

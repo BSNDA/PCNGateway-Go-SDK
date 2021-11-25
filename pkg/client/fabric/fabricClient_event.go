@@ -11,6 +11,7 @@ import (
 	"github.com/wonderivan/logger"
 )
 
+// EventRegister register fabric transaction event listeners
 func (c *FabricClient) EventRegister(body eventreq.RegisterReqDataBody) (*eventres.RegisterResData, error) {
 
 	url := c.GetURL("/api/fabric/v1/chainCode/event/register")
@@ -20,17 +21,19 @@ func (c *FabricClient) EventRegister(body eventreq.RegisterReqDataBody) (*eventr
 	data.Body = body
 	data.Mac = c.Sign(data.GetEncryptionValue())
 
-	reqBytes, _ := json.Marshal(data)
+	reqBytes, err := json.Marshal(data)
+	if err != nil {
+		logger.Error("request parameter serialization failed：", err)
+		return nil, err
+	}
 
 	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
-
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
 		return nil, err
 	}
 
 	res := &eventres.RegisterResData{}
-
 	err = json.Unmarshal(resBytes, res)
 
 	if err != nil {
@@ -41,6 +44,7 @@ func (c *FabricClient) EventRegister(body eventreq.RegisterReqDataBody) (*eventr
 	return res, nil
 }
 
+// BlockEventRegister register fabric block event listeners
 func (c *FabricClient) BlockEventRegister(body eventreq.RegisterReqDataBody) (*eventres.RegisterResData, error) {
 
 	url := c.GetURL("/api/fabric/v1/chainCode/event/blockRegister")
@@ -50,7 +54,11 @@ func (c *FabricClient) BlockEventRegister(body eventreq.RegisterReqDataBody) (*e
 	data.Body = body
 	data.Mac = c.Sign(data.GetEncryptionValue())
 
-	reqBytes, _ := json.Marshal(data)
+	reqBytes, err := json.Marshal(data)
+	if err != nil {
+		logger.Error("request parameter serialization failed：", err)
+		return nil, err
+	}
 
 	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
 
@@ -71,28 +79,26 @@ func (c *FabricClient) BlockEventRegister(body eventreq.RegisterReqDataBody) (*e
 	return res, nil
 }
 
+// EventQuery query fabric event list
 func (c *FabricClient) EventQuery() (*eventres.QueryResData, error) {
 
 	url := c.GetURL("/api/fabric/v1/chainCode/event/query")
-
 	data := &eventreq.QueryReqData{}
 	data.Header = c.GetHeader()
-	//data.Body = body
 	data.Mac = c.Sign(data.GetEncryptionValue())
-
-	reqBytes, _ := json.Marshal(data)
-
+	reqBytes, err := json.Marshal(data)
+	if err != nil {
+		logger.Error("request parameter serialization failed：", err)
+		return nil, err
+	}
 	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
-
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
 		return nil, err
 	}
 
 	res := &eventres.QueryResData{}
-
 	err = json.Unmarshal(resBytes, res)
-
 	if err != nil {
 		logger.Error("return parameter serialization failed：", err)
 		return nil, err
@@ -101,6 +107,7 @@ func (c *FabricClient) EventQuery() (*eventres.QueryResData, error) {
 	return res, nil
 }
 
+// EventRemove remove fabric event
 func (c *FabricClient) EventRemove(body eventreq.RemoveReqDataBody) (*resBase.BaseResModel, error) {
 
 	url := c.GetURL("/api/fabric/v1/chainCode/event/remove")
@@ -110,8 +117,11 @@ func (c *FabricClient) EventRemove(body eventreq.RemoveReqDataBody) (*resBase.Ba
 	data.Body = body
 	data.Mac = c.Sign(data.GetEncryptionValue())
 
-	reqBytes, _ := json.Marshal(data)
-
+	reqBytes, err := json.Marshal(data)
+	if err != nil {
+		logger.Error("request parameter serialization failed：", err)
+		return nil, err
+	}
 	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
 
 	if err != nil {

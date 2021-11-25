@@ -5,8 +5,6 @@ Normally，if an off-BSN system wants to communicate with a service (DApp) on th
 
 ## Go SDK
 
-## SDK in csharp
-
 ## framework and key support
 
 >Currently, SDK in Go supports all framework and key combination applications on the official website

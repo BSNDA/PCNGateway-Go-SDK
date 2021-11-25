@@ -1,9 +1,3 @@
-/**
- * @Author: Gao Chenxi
- * @Description:
- * @Date: 2020/4/1 4:35 PM
- * @File: main
- */
 package main
 
 import (
@@ -26,12 +20,12 @@ func main() {
 	mspDir := ""   //cert storage directory
 	cert := ""     //cert
 
-	config, err := config.NewConfig(api, userCode, appCode, puk, prk, mspDir, cert)
+	conf, err := config.NewConfig(api, userCode, appCode, puk, prk, mspDir, cert)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	client, err := fabric.InitFabricClient(config)
+	client, err := fabric.InitFabricClient(conf)
 	if err != nil {
 		log.Fatal(err)
 	}

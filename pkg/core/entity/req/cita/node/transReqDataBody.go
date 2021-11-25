@@ -13,7 +13,8 @@ type TransReqDataBody struct {
 	UserId       string `json:"userId"`
 	ContractName string `json:"contractName"`
 	FuncName     string `json:"funcName"`
-	FuncParam    string `json:"funcParam"`
+	//JSON string after serialization with []string , function name not included.
+	FuncParam string `json:"funcParam"`
 }
 
 func (f *TransReqData) GetEncryptionValue() string {

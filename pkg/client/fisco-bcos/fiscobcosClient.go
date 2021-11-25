@@ -11,12 +11,11 @@ import (
 )
 
 func NewFiscoBcosClient(config *config.Config) (*FiscoBcosClient, error) {
-	client := client.Client{
-		Config: config,
-	}
 
 	fiscoBcosClient := &FiscoBcosClient{
-		client,
+		Client: client.Client{
+			Config: config,
+		},
 	}
 
 	err := fiscoBcosClient.SetAlgorithm(config.GetAppInfo().AlgorithmType, config.GetAppCert().AppPublicCert, config.GetAppCert().UserAppPrivateCert)

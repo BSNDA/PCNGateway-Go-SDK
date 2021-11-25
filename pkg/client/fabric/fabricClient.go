@@ -31,15 +31,13 @@ func InitFabricClient(config *config.Config) (*FabricClient, error) {
 	//generate a cert handler
 	us := userstore.NewUserStore(config.GetUSPath())
 
-	client := client.Client{
-		Config: config,
-	}
-
 	fabricClient := &FabricClient{
-		Client: client,
-		ks:     ks,
-		us:     us,
-		Users:  make(map[string]*msp.UserData),
+		Client: client.Client{
+			Config: config,
+		},
+		ks:    ks,
+		us:    us,
+		Users: make(map[string]*msp.UserData),
 	}
 	//configure the algorithm type of user signature and generate a unified signature verification handler
 	err = fabricClient.SetAlgorithm(config.GetAppInfo().AlgorithmType, config.GetAppCert().AppPublicCert, config.GetAppCert().UserAppPrivateCert)
@@ -49,7 +47,7 @@ func InitFabricClient(config *config.Config) (*FabricClient, error) {
 		return nil, err
 	}
 	//load the client's info generated locally
-	fabricClient.LoadUser()
+	fabricClient.loadUser()
 
 	return fabricClient, nil
 }
@@ -61,21 +59,18 @@ type FabricClient struct {
 	Users map[string]*msp.UserData
 }
 
-func (c *FabricClient) GetCertName(name string) string {
+// subUserCertName sub user name in certificate
+func (c *FabricClient) subUserCertName(name string) string {
 	return name + "@" + c.Config.GetAppInfo().AppCode
 }
 
-func (c *FabricClient) LoadUser() {
-
+// loadUser load all local user of this Dapp
+func (c *FabricClient) loadUser() {
 	users := c.us.LoadAll(c.Config.GetAppInfo().AppCode)
-
 	for i, _ := range users {
-
 		user := users[i]
 		user.MspId = c.Config.GetAppInfo().MspId
-
 		err := keystore.LoadKey(user, c.ks, c.Config.GetAppInfo().AlgorithmType)
-
 		if err == nil {
 			c.Users[user.UserName] = user
 		}

@@ -1,11 +1,11 @@
 package crypto
 
 import (
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"math/big"
-	"math/rand"
 )
 
 const (

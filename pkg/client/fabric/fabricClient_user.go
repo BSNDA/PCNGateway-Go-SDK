@@ -22,6 +22,7 @@ import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 )
 
+// RegisterUser register sub user
 func (c *FabricClient) RegisterUser(body userreq.RegisterReqDataBody) (*userres.RegisterResData, error) {
 
 	url := c.GetURL("/api/fabric/v1/user/register")
@@ -54,6 +55,7 @@ func (c *FabricClient) RegisterUser(body userreq.RegisterReqDataBody) (*userres.
 	return res, nil
 }
 
+// EnrollUser enroll sub user certificate and store to local folder and FabricClient.Users
 func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) error {
 
 	enrollBody := userreq.EnrollReqDataBody{
@@ -61,7 +63,7 @@ func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) error {
 		Secret: body.Secret,
 	}
 
-	csr, key, err := cert.GetCSRPEM(c.GetCertName(enrollBody.Name), c.Config.GetAppInfo().AlgorithmType, c.ks)
+	csr, key, err := cert.GetCSRPEM(c.subUserCertName(enrollBody.Name), c.Config.GetAppInfo().AlgorithmType, c.ks)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -107,6 +109,7 @@ func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) error {
 
 }
 
+// enroll enroll sub user certificate
 func (c *FabricClient) enroll(body userreq.EnrollReqDataBody) (*userres.EnrollResData, error) {
 
 	url := c.GetURL("/api/fabric/v1/user/enroll")

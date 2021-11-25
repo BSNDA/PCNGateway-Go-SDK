@@ -11,12 +11,10 @@ import (
 )
 
 func NewCitaClient(config *config.Config) (*CitaClient, error) {
-	client := client.Client{
-		Config: config,
-	}
-
 	citaClient := &CitaClient{
-		client,
+		Client: client.Client{
+			Config: config,
+		},
 	}
 
 	err := citaClient.SetAlgorithm(config.GetAppInfo().AlgorithmType, config.GetAppCert().AppPublicCert, config.GetAppCert().UserAppPrivateCert)
