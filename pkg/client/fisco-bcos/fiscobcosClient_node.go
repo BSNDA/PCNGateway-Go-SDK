@@ -11,6 +11,7 @@ import (
 	"strconv"
 )
 
+// ReqChainCode Dapp transaction in public key upload mode
 func (c *FiscoBcosClient) ReqChainCode(body nodereq.TransReqDataBody) (*noderes.TransResData, error) {
 	url := c.GetURL("/api/fiscobcos/v1/node/reqChainCode")
 
@@ -38,6 +39,7 @@ func (c *FiscoBcosClient) ReqChainCode(body nodereq.TransReqDataBody) (*noderes.
 	return res, nil
 }
 
+// GetBlockInfo query fisco bcos block data
 func (c *FiscoBcosClient) GetBlockInfo(body nodereq.BlockReqDataBody) (*noderes.BlockResData, error) {
 
 	url := c.GetURL("/api/fiscobcos/v1/node/getBlockInfo")
@@ -65,6 +67,7 @@ func (c *FiscoBcosClient) GetBlockInfo(body nodereq.BlockReqDataBody) (*noderes.
 	return res, nil
 }
 
+// GetBlockHeight query fisco bcos block height
 func (c *FiscoBcosClient) GetBlockHeight() (*noderes.BlockHeightResData, error) {
 
 	url := c.GetURL("/api/fiscobcos/v1/node/getBlockHeight")
@@ -92,6 +95,7 @@ func (c *FiscoBcosClient) GetBlockHeight() (*noderes.BlockHeightResData, error) 
 	return res, nil
 }
 
+// GetTxCount query fisco bcos total number of transactions in Dapp
 func (c *FiscoBcosClient) GetTxCount() (*noderes.BlockHeightResData, error) {
 
 	url := c.GetURL("/api/fiscobcos/v1/node/getTxCount")
@@ -119,6 +123,7 @@ func (c *FiscoBcosClient) GetTxCount() (*noderes.BlockHeightResData, error) {
 	return res, nil
 }
 
+// GetTxCountByBlockNumber query fisco bcos total number of transactions in block
 func (c *FiscoBcosClient) GetTxCountByBlockNumber(blockNumber int64) (*noderes.BlockHeightResData, error) {
 
 	url := c.GetURL("/api/fiscobcos/v1/node/getTxCountByBlockNumber")
@@ -148,6 +153,7 @@ func (c *FiscoBcosClient) GetTxCountByBlockNumber(blockNumber int64) (*noderes.B
 	return res, nil
 }
 
+// GetTxCountByBlockNumber query fisco bcos transactions receipt
 func (c *FiscoBcosClient) GetTxReceiptByTxHash(body nodereq.TxReqDataBody) (*noderes.BlockTxReceiptResData, error) {
 
 	url := c.GetURL("/api/fiscobcos/v1/node/getTxReceiptByTxHash")
@@ -178,6 +184,7 @@ func (c *FiscoBcosClient) GetTxReceiptByTxHash(body nodereq.TxReqDataBody) (*nod
 	return res, nil
 }
 
+// GetTxCountByBlockNumber query fisco bcos transactions info
 func (c *FiscoBcosClient) GetTxInfoByTxHash(body nodereq.TxReqDataBody) (*noderes.BlockTxResData, error) {
 
 	url := c.GetURL("/api/fiscobcos/v1/node/getTxInfoByTxHash")
@@ -258,6 +265,7 @@ func (c *FiscoBcosClient) getTransData(data nodereq.TransData) (string, error) {
 
 }
 
+// Trans Dapp transaction in key trust mode
 func (c *FiscoBcosClient) Trans(data nodereq.TransData) (*noderes.TransResData, error) {
 	url := c.GetURL("/api/fiscobcos/v1/node/trans")
 

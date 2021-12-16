@@ -14,6 +14,7 @@ import (
 	"path"
 )
 
+// RegisterUser register sub user
 func (c *FiscoBcosClient) RegisterUser(body userReq.RegisterReqDataBody) (*userRes.RegisterResData, error) {
 
 	url := c.GetURL("/api/fiscobcos/v1/user/register")

@@ -8,6 +8,7 @@ import (
 	"github.com/wonderivan/logger"
 )
 
+// EventRegister register fisco bcos transaction or block event  listeners
 func (c *FiscoBcosClient) EventRegister(body eventreq.RegisterReqDataBody) (*eventres.RegisterEventResData, error) {
 	url := c.GetURL("/api/fiscobcos/v1/event/register")
 
@@ -35,6 +36,7 @@ func (c *FiscoBcosClient) EventRegister(body eventreq.RegisterReqDataBody) (*eve
 	return res, nil
 }
 
+// EventQuery query fisco bcos event list
 func (c *FiscoBcosClient) EventQuery() (*eventres.QueryEventResData, error) {
 	url := c.GetURL("/api/fiscobcos/v1/event/query")
 
@@ -62,6 +64,7 @@ func (c *FiscoBcosClient) EventQuery() (*eventres.QueryEventResData, error) {
 	return res, nil
 }
 
+// EventRemove remove fisco bcos event
 func (c *FiscoBcosClient) EventRemove(body eventreq.RemoveReqDataBody) (*eventres.RemoveEventResData, error) {
 	url := c.GetURL("/api/fiscobcos/v1/event/remove")
 
