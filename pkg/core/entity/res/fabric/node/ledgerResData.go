@@ -23,8 +23,8 @@ func (f *LedgerResData) GetEncryptionValue() string {
 
 	fp := f.GetBaseEncryptionValue()
 	fp = fp + f.Body.BlockHash
-	fp = fp + f.Body.PreBlockHash
 	fp = fp + strconv.FormatUint(f.Body.Height, 10)
+	fp = fp + f.Body.PreBlockHash
 
 	return fp
 }

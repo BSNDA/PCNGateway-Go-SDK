@@ -2,6 +2,7 @@ package node
 
 import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
+	"strconv"
 )
 
 type BlockTxResData struct {
@@ -11,6 +12,8 @@ type BlockTxResData struct {
 
 type TransactionData struct {
 	TxHash          string `json:"txHash"`
+	BlockHash       string `json:"blockHash"`
+	BlockNumber     int64  `json:"blockNumber"`
 	Data            string `json:"data"`
 	ChainId         string `json:"chainId"`
 	Quota           string `json:"quota"`
@@ -26,6 +29,8 @@ func (f *TransactionData) GetEncryptionValue() string {
 	fp := ""
 
 	fp = fp + f.TxHash
+	fp = fp + f.BlockHash
+	fp = fp + strconv.FormatInt(f.BlockNumber, 10)
 	fp = fp + f.Data
 	fp = fp + f.ChainId
 	fp = fp + f.Quota

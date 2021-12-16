@@ -3,10 +3,13 @@ package fabric
 import (
 	nodereq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/node"
 	noderes "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/fabric/node"
+	"github.com/hyperledger/fabric-protos-go/common"
+	pb "github.com/hyperledger/fabric-protos-go/peer"
 	"github.com/wonderivan/logger"
 
 	"encoding/json"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans/fabric"
+	blockconvert "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans/fabric"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 )
 
@@ -119,7 +122,7 @@ func (c *FabricClient) GetTransInfo(body nodereq.TxTransReqDataBody) (*noderes.T
 
 // GetTransData  query fabric transaction,
 // but the return data is "peer.ProcessedTransaction" serialized bytes after Base64 encoding .
-func (c *FabricClient) GetTransData(body nodereq.TxTransReqDataBody) (*noderes.TranDataRes, error) {
+func (c *FabricClient) GetTransData(body nodereq.TxTransReqDataBody) (*noderes.TranDataRes, *pb.ProcessedTransaction, error) {
 	url := c.GetURL("/api/fabric/v1/node/getTransdata")
 
 	data := &nodereq.TxTransReqData{}
@@ -132,7 +135,7 @@ func (c *FabricClient) GetTransData(body nodereq.TxTransReqDataBody) (*noderes.T
 	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
-		return nil, err
+		return nil, nil, err
 	}
 	res := &noderes.TranDataRes{}
 
@@ -140,10 +143,15 @@ func (c *FabricClient) GetTransData(body nodereq.TxTransReqDataBody) (*noderes.T
 
 	if err != nil {
 		logger.Error("return parameter serialization failed：", err)
-		return nil, err
+		return nil, nil, err
 	}
-
-	return res, nil
+	trans := &pb.ProcessedTransaction{}
+	trans, err = blockconvert.ConvertToTran(res.Body.TransData)
+	if err != nil {
+		logger.Error("convertTrans failed,errmessage：", err)
+		return res, nil, err
+	}
+	return res, trans, nil
 }
 
 // GetBlockInfo query fabric block data
@@ -179,7 +187,7 @@ func (c *FabricClient) GetBlockInfo(body nodereq.BlockReqDataBody) (*noderes.Blo
 
 // GetBlockData query fabric block data
 // but the return data is "common.Block" serialized bytes after Base64 encoding .
-func (c *FabricClient) GetBlockData(body nodereq.BlockReqDataBody) (*noderes.BlockDataRes, error) {
+func (c *FabricClient) GetBlockData(body nodereq.BlockReqDataBody) (*noderes.BlockDataRes, *common.Block, error) {
 
 	url := c.GetURL("/api/fabric/v1/node/getBlockData")
 
@@ -194,19 +202,27 @@ func (c *FabricClient) GetBlockData(body nodereq.BlockReqDataBody) (*noderes.Blo
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
-		return nil, err
+		return nil, nil, err
 	}
 
 	res := &noderes.BlockDataRes{}
-
+	block := &common.Block{}
 	err = json.Unmarshal(resBytes, res)
 
 	if err != nil {
 		logger.Error("return parameter serialization failed：", err)
-		return nil, err
+		return nil, nil, err
 	}
 
-	return res, nil
+	if len(res.Body.BlockData) > 0 {
+		block, err = blockconvert.ConvertToBlock(res.Body.BlockData)
+		if err != nil {
+			logger.Error("convertBlock failed,errmessage：", err)
+			return res, nil, err
+		}
+	}
+
+	return res, block, nil
 }
 
 // GetBlockData query fabric ledger data
