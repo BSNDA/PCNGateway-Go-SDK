@@ -16,8 +16,9 @@ type AppInfoResDataBody struct {
 	CaType        int    `json:"caType"`
 	AlgorithmType int    `json:"algorithmType"`
 	MspId         string `json:"mspId"`
-	ChannelId     string `json:"channelId"`
-	Version       string `json:"version"`
+	//groupId in FISCO BCOS Dapp
+	ChannelId string `json:"channelId"`
+	Version   string `json:"version"`
 }
 
 func (f *AppInfoResData) GetEncryptionValue() string {
