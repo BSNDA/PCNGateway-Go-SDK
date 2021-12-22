@@ -9,6 +9,7 @@ import (
 	"github.com/wonderivan/logger"
 )
 
+//register event
 func (c *XuperChainClient) RegisterEvent(body req.RegisterEventReqDataBody) (*res.QueryEventResData, error) {
 
 	url := c.GetURL("/api/xuperchain/v1/event/register")
@@ -38,6 +39,7 @@ func (c *XuperChainClient) RegisterEvent(body req.RegisterEventReqDataBody) (*re
 	return res, nil
 }
 
+//query event list
 func (c *XuperChainClient) QueryEvent() (*res.QueryEventResData, error) {
 
 	url := c.GetURL("/api/xuperchain/v1/event/query")
@@ -68,6 +70,7 @@ func (c *XuperChainClient) QueryEvent() (*res.QueryEventResData, error) {
 	return res, nil
 }
 
+//remove event
 func (c *XuperChainClient) RemoveEvent(body req.RemoveEventReqDataBody) (*res.RemoveEventResData, error) {
 
 	url := c.GetURL("/api/xuperchain/v1/event/remove")

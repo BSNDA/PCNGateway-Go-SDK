@@ -13,7 +13,7 @@ import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 )
 
-// SdkTran Dapp transaction in key trust mode
+// SdkTran Dapp transaction in key upload mode
 func (c *FabricClient) SdkTran(body nodereq.TransReqDataBody) (*noderes.TranResData, error) {
 
 	url := c.GetURL("/api/fabric/v1/node/trans")
@@ -64,7 +64,7 @@ func (c *FabricClient) SdkTran(body nodereq.TransReqDataBody) (*noderes.TranResD
 
 }
 
-// ReqChainCode Dapp transaction in public key upload mode
+// ReqChainCode Dapp transaction in public key trust mode
 func (c *FabricClient) ReqChainCode(body nodereq.TransReqDataBody) (*noderes.TranResData, error) {
 	url := c.GetURL("/api/fabric/v1/node/reqChainCode")
 

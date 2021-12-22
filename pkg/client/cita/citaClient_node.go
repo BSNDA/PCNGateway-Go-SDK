@@ -13,6 +13,7 @@ import (
 	"github.com/wonderivan/logger"
 )
 
+//DApp transaction in public key trust mode
 func (c *CitaClient) ReqChainCode(body nodereq.TransReqDataBody) (*noderes.TransResData, error) {
 	url := c.GetURL("/api/cita/v1/node/reqChainCode")
 
@@ -40,6 +41,7 @@ func (c *CitaClient) ReqChainCode(body nodereq.TransReqDataBody) (*noderes.Trans
 	return res, nil
 }
 
+//get block information
 func (c *CitaClient) GetBlockInfo(body nodereq.BlockReqDataBody) (*noderes.BlockResData, error) {
 
 	url := c.GetURL("/api/cita/v1/node/getBlockInfo")
@@ -67,6 +69,7 @@ func (c *CitaClient) GetBlockInfo(body nodereq.BlockReqDataBody) (*noderes.Block
 	return res, nil
 }
 
+//get block height
 func (c *CitaClient) GetBlockHeight() (*noderes.BlockHeightResData, error) {
 
 	url := c.GetURL("/api/cita/v1/node/getBlockHeight")
@@ -94,6 +97,7 @@ func (c *CitaClient) GetBlockHeight() (*noderes.BlockHeightResData, error) {
 	return res, nil
 }
 
+//get transaction Receipt
 func (c *CitaClient) GetTxReceiptByTxHash(body nodereq.TxTransReqDataBody) (*noderes.BlockTxReceiptResData, error) {
 
 	url := c.GetURL("/api/cita/v1/node/getTxReceiptByTxHash")
@@ -124,6 +128,7 @@ func (c *CitaClient) GetTxReceiptByTxHash(body nodereq.TxTransReqDataBody) (*nod
 	return res, nil
 }
 
+//get transaction information
 func (c *CitaClient) GetTxInfoByTxHash(body nodereq.TxTransReqDataBody) (*noderes.BlockTxResData, error) {
 
 	url := c.GetURL("/api/cita/v1/node/getTxInfoByTxHash")
@@ -154,6 +159,7 @@ func (c *CitaClient) GetTxInfoByTxHash(body nodereq.TxTransReqDataBody) (*nodere
 	return res, nil
 }
 
+//DApp transaction in public key upload mode
 func (c *CitaClient) Trans(data nodereq.TransData) (*noderes.TransResData, error) {
 	if c.Config.GetAppInfo().CAType == enum.AppCaType_Trust {
 		return nil, errors.New("the trusteeship application cannot call the api")
@@ -194,6 +200,7 @@ func (c *CitaClient) Trans(data nodereq.TransData) (*noderes.TransResData, error
 	return res, nil
 }
 
+//splicing key upload mode transaction string
 func (c *CitaClient) getTransData(data nodereq.TransData) (string, error) {
 	blockLimit, err := c.getBlockLimit()
 	if err != nil {

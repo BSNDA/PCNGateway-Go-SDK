@@ -15,6 +15,7 @@ import (
 	"github.com/wonderivan/logger"
 )
 
+//register user
 func (c *CitaClient) RegisterUser(body userReq.RegisterReqDataBody) (*userRes.RegisterResData, error) {
 
 	url := c.GetURL("/api/cita/v1/user/register")

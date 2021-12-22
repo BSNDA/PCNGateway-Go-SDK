@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-// ReqChainCode Dapp transaction in public key upload mode
+// ReqChainCode Dapp transaction in public key trust mode
 func (c *FiscoBcosClient) ReqChainCode(body nodereq.TransReqDataBody) (*noderes.TransResData, error) {
 	url := c.GetURL("/api/fiscobcos/v1/node/reqChainCode")
 
@@ -265,7 +265,7 @@ func (c *FiscoBcosClient) getTransData(data nodereq.TransData) (string, error) {
 
 }
 
-// Trans Dapp transaction in key trust mode
+// Trans Dapp transaction in key upload mode
 func (c *FiscoBcosClient) Trans(data nodereq.TransData) (*noderes.TransResData, error) {
 	url := c.GetURL("/api/fiscobcos/v1/node/trans")
 
