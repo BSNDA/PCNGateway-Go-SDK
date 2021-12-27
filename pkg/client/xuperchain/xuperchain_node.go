@@ -14,6 +14,7 @@ import (
 	"github.com/wonderivan/logger"
 )
 
+//DApp transaction in public key upload mode
 func (c *XuperChainClient) SdkTran(body req.UPukCallContractReqDataReqDataBody) (*res.UPukCallContractResData, error) {
 	url := c.GetURL("/api/xuperchain/v1/node/trans")
 
@@ -44,6 +45,8 @@ func (c *XuperChainClient) SdkTran(body req.UPukCallContractReqDataReqDataBody) 
 
 	return resData, nil
 }
+
+//DApp transaction in public key trust mode
 func (c *XuperChainClient) ReqChainCode(body req.CallContractReqDataReqDataBody) (*res.CallContractResData, error) {
 	url := c.GetURL("/api/xuperchain/v1/node/reqChainCode")
 
@@ -75,6 +78,7 @@ func (c *XuperChainClient) ReqChainCode(body req.CallContractReqDataReqDataBody)
 	return resData, nil
 }
 
+//get transaction information
 func (c *XuperChainClient) GetTxInfo(body req.GetTxInfoReqDataBody) (*res.GetTxInfoResData, error) {
 	url := c.GetURL("/api/xuperchain/v1/node/getTxInfoByTxHash")
 
@@ -105,6 +109,7 @@ func (c *XuperChainClient) GetTxInfo(body req.GetTxInfoReqDataBody) (*res.GetTxI
 	return resData, nil
 }
 
+//get block information
 func (c *XuperChainClient) GetBlockInfo(body req.GetBlockInfoReqDataBody) (*res.GetBlockInfoResData, error) {
 	url := c.GetURL("/api/xuperchain/v1/node/getBlockInfo")
 
