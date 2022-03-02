@@ -15,7 +15,6 @@ func ConvertToBlock(blockData string) (*common.Block, error) {
 	if err != nil {
 		return nil, errors.WithMessage(err, "convert block data has error")
 	}
-
 	block := &common.Block{}
 
 	err = proto.Unmarshal(blockBytes, block)

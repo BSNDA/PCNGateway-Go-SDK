@@ -12,6 +12,8 @@ import (
 	"github.com/hyperledger/fabric-protos-go/common"
 	"github.com/hyperledger/fabric-protos-go/peer"
 	pb "github.com/hyperledger/fabric-protos-go/peer"
+	"github.com/hyperledger/fabric/common/tools/protolator"
+	"strings"
 )
 
 func CreateRequest(user *msp.UserData, request *TransRequest) (data string, txId string, err error) {
@@ -209,4 +211,17 @@ func ConvertToTran(transData string) (*pb.ProcessedTransaction, error) {
 	}
 
 	return trans, nil
+}
+
+func ConvertTransToJson(tx *pb.ProcessedTransaction) (string, error) {
+
+	var sb strings.Builder
+
+	err := protolator.DeepMarshalJSON(&sb, tx)
+	if err != nil {
+		return "", err
+	}
+
+	return sb.String(), err
+
 }
