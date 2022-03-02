@@ -10,6 +10,7 @@ import (
 	"github.com/wonderivan/logger"
 )
 
+//initialize client requested by cita
 func NewCitaClient(config *config.Config) (*CitaClient, error) {
 	citaClient := &CitaClient{
 		Client: client.Client{
@@ -35,6 +36,7 @@ func (f *CitaClient) isSM() bool {
 	return f.Config.GetAppInfo().AlgorithmType == enum.AppAlgorithmType_SM2
 }
 
+//get transaction block limit
 func (c *CitaClient) getBlockLimit() (uint64, error) {
 	res, err := c.GetBlockHeight()
 	if err != nil {
@@ -53,6 +55,7 @@ func (c *CitaClient) getBlockLimit() (uint64, error) {
 	return height, nil
 }
 
+//get basic information
 func (c *CitaClient) getBaseInfo() (string, uint32, error) {
 
 	chainId := c.Config.GetAppInfo().ChannelId
@@ -67,6 +70,8 @@ func (c *CitaClient) getBaseInfo() (string, uint32, error) {
 	}
 	return chainId, uint32(version), nil
 }
+
+//check if it starts with 0x
 func has0xPrefix(input string) bool {
 	return len(input) >= 2 && input[0] == '0' && (input[1] == 'x' || input[1] == 'X')
 }

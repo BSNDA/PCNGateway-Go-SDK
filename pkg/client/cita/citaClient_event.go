@@ -9,6 +9,7 @@ import (
 	"github.com/wonderivan/logger"
 )
 
+//register cita event listeners
 func (c *CitaClient) EventRegister(body eventreq.RegisterReqDataBody) (*eventres.RegisterEventResData, error) {
 	url := c.GetURL("/api/cita/v1/event/register")
 
@@ -36,6 +37,7 @@ func (c *CitaClient) EventRegister(body eventreq.RegisterReqDataBody) (*eventres
 	return res, nil
 }
 
+//query event list
 func (c *CitaClient) EventQuery() (*eventres.QueryEventResData, error) {
 	url := c.GetURL("/api/cita/v1/event/query")
 
@@ -63,6 +65,7 @@ func (c *CitaClient) EventQuery() (*eventres.QueryEventResData, error) {
 	return res, nil
 }
 
+//remove event
 func (c *CitaClient) EventRemove(body eventreq.RemoveReqDataBody) (*eventres.RemoveEventResData, error) {
 	url := c.GetURL("/api/cita/v1/event/remove")
 
