@@ -2,9 +2,9 @@ package fisco_bcos
 
 import (
 	"encoding/json"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/http"
 	eventreq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fiscobcos/event"
 	eventres "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/fiscobcos/event"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 	"github.com/wonderivan/logger"
 )
 
@@ -19,7 +19,7 @@ func (c *FiscoBcosClient) EventRegister(body eventreq.RegisterReqDataBody) (*eve
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
 		return nil, err
@@ -47,7 +47,7 @@ func (c *FiscoBcosClient) EventQuery() (*eventres.QueryEventResData, error) {
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
 		return nil, err
@@ -75,7 +75,7 @@ func (c *FiscoBcosClient) EventRemove(body eventreq.RemoveReqDataBody) (*eventre
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
 		return nil, err

@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/cert"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/http"
 	userReq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fiscobcos/user"
 	userRes "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/fiscobcos/user"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
+	"github.com/BSNDA/bsn-sdk-crypto/key"
 	"github.com/wonderivan/logger"
 	"io/ioutil"
 	"os"
@@ -26,7 +26,7 @@ func (c *FiscoBcosClient) RegisterUser(body userReq.RegisterReqDataBody) (*userR
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
@@ -47,7 +47,7 @@ func (c *FiscoBcosClient) RegisterUser(body userReq.RegisterReqDataBody) (*userR
 	return res, nil
 }
 
-func (c *FiscoBcosClient) getUser(userName string) (interface{}, error) {
+func (c *FiscoBcosClient) getUser(userName string) (key.PrivateKeyProvider, error) {
 	userPath := c.Config.GetKSPath()
 
 	fileName := getKeyFileName(userName, c.Config.GetAppInfo().AppCode)
@@ -56,7 +56,13 @@ func (c *FiscoBcosClient) getUser(userName string) (interface{}, error) {
 
 	if _, err1 := os.Stat(filePath); os.IsNotExist(err1) {
 		//create key
-		key, keyBytes, err := cert.NewUser(c.Config.GetAppInfo().AlgorithmType)
+
+		privKey, err := key.NewPrivateKeyByGen(c.Config.GetAppInfo().AlgorithmType.ToKeyType())
+
+		if err != nil {
+			return nil, err
+		}
+		keyBytes, err := privKey.KeyPEM()
 		if err != nil {
 			return nil, err
 		}
@@ -64,7 +70,7 @@ func (c *FiscoBcosClient) getUser(userName string) (interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
-		return key, nil
+		return privKey, nil
 
 	} else {
 		bytes, err := ioutil.ReadFile(filePath) // nolint: gas
@@ -75,7 +81,7 @@ func (c *FiscoBcosClient) getUser(userName string) (interface{}, error) {
 			return nil, errors.New("user key error")
 		}
 
-		return cert.GetUserKey(bytes, c.Config.GetAppInfo().AlgorithmType)
+		return key.NewPrivateKeyProvider(c.Config.GetAppInfo().AlgorithmType.ToKeyType(), string(bytes))
 
 	}
 

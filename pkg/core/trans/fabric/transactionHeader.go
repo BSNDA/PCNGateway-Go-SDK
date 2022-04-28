@@ -1,7 +1,7 @@
 package fabric
 
 import (
-	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans/fabric/fab"
 )
 
 // TransactionHeader contains metadata for a transaction created by the SDK.

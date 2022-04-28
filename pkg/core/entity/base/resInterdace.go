@@ -1,5 +1,6 @@
 package base
 
 type ResInterface interface {
-	//GetHeader() *ResHeader
+	GetMac() string
+	GetEncryptionValue() string
 }

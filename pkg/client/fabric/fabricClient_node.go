@@ -1,30 +1,40 @@
 package fabric
 
 import (
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
 	nodereq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/node"
 	noderes "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/fabric/node"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans/fabric"
 	"github.com/hyperledger/fabric-protos-go/common"
 	pb "github.com/hyperledger/fabric-protos-go/peer"
+	"github.com/pkg/errors"
 	"github.com/wonderivan/logger"
 
-	"encoding/json"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans/fabric"
 	blockconvert "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans/fabric"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
+)
+
+const (
+	ReqChainCode  = "node/reqChainCode"
+	SDKTran       = "node/trans"
+	GetTransInfo  = "node/getTransaction"
+	GetTransData  = "node/getTransdata"
+	GetBlockInfo  = "node/getBlockInfo"
+	GetBlockData  = "node/getBlockData"
+	GetLedgerInfo = "node/getLedgerInfo"
 )
 
 // SdkTran Dapp transaction in key upload mode
-func (c *FabricClient) SdkTran(body nodereq.TransReqDataBody) (*noderes.TranResData, error) {
+func (c *FabricClient) SdkTran(body nodereq.TransReqDataBody, user *msp.UserData) (*noderes.TranResData, error) {
 
-	url := c.GetURL("/api/fabric/v1/node/trans")
-
-	user, err := c.GetUser(body.UserName)
-	if err != nil {
-		return nil, err
+	var err error
+	if user == nil {
+		user, err = c.LoadUser(body.UserName)
+		if err != nil {
+			return nil, errors.WithMessagef(err, "user [%s] load failed", body.UserName)
+		}
 	}
 
-	request := body.GetTransRequest(c.Config.GetAppInfo().ChannelId)
-
+	request := body.GetTransRequest(c.appInfo.ChannelId)
 	transData, _, err := fabric.CreateRequest(user, request)
 
 	if err != nil {
@@ -36,24 +46,8 @@ func (c *FabricClient) SdkTran(body nodereq.TransReqDataBody) (*noderes.TranResD
 	data.Body = nodereq.SdkTransReqDataBody{
 		TransData: transData,
 	}
-	data.Mac = c.Sign(data.GetEncryptionValue())
-
-	reqBytes, err := json.Marshal(data)
-
-	if err != nil {
-		return nil, err
-	}
-
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
-
-	if err != nil {
-		logger.Error("gateway interface call failed：", err)
-		return nil, err
-	}
-
 	res := &noderes.TranResData{}
-
-	err = json.Unmarshal(resBytes, res)
+	err = c.Call(SDKTran, data, res)
 
 	if err != nil {
 		logger.Error("return parameter serialization failed：", err)
@@ -66,85 +60,51 @@ func (c *FabricClient) SdkTran(body nodereq.TransReqDataBody) (*noderes.TranResD
 
 // ReqChainCode Dapp transaction in public key trust mode
 func (c *FabricClient) ReqChainCode(body nodereq.TransReqDataBody) (*noderes.TranResData, error) {
-	url := c.GetURL("/api/fabric/v1/node/reqChainCode")
 
-	data := &nodereq.TransReqData{}
-	data.Header = c.GetHeader()
-	data.Body = body
-	data.Mac = c.Sign(data.GetEncryptionValue())
+	req := &nodereq.TransReqData{}
+	req.Header = c.GetHeader()
+	req.Body = body
 
-	reqBytes, _ := json.Marshal(data)
-
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
-	if err != nil {
-		logger.Error("gateway interface call failed：", err)
-		return nil, err
-	}
 	res := &noderes.TranResData{}
 
-	err = json.Unmarshal(resBytes, res)
-
+	err := c.Call(ReqChainCode, req, res)
 	if err != nil {
-		logger.Error("return parameter serialization failed：", err)
-		return nil, err
+		return nil, errors.WithMessagef(err, "call %s has error", ReqChainCode)
 	}
-
 	return res, nil
 }
 
 // GetTransInfo query fabric transaction
 func (c *FabricClient) GetTransInfo(body nodereq.TxTransReqDataBody) (*noderes.TransactionResData, error) {
-	url := c.GetURL("/api/fabric/v1/node/getTransaction")
 
-	data := &nodereq.TxTransReqData{}
-	data.Header = c.GetHeader()
-	data.Body = body
-	data.Mac = c.Sign(data.GetEncryptionValue())
+	req := &nodereq.TxTransReqData{}
+	req.Header = c.GetHeader()
+	req.Body = body
 
-	reqBytes, _ := json.Marshal(data)
-
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
-	if err != nil {
-		logger.Error("gateway interface call failed：", err)
-		return nil, err
-	}
 	res := &noderes.TransactionResData{}
 
-	err = json.Unmarshal(resBytes, res)
-
+	err := c.Call(GetTransInfo, req, res)
 	if err != nil {
-		logger.Error("return parameter serialization failed：", err)
-		return nil, err
+		return nil, errors.WithMessagef(err, "call %s has error", GetTransInfo)
 	}
-
 	return res, nil
 }
 
 // GetTransData  query fabric transaction,
 // but the return data is "peer.ProcessedTransaction" serialized bytes after Base64 encoding .
 func (c *FabricClient) GetTransData(body nodereq.TxTransReqDataBody) (*noderes.TranDataRes, *pb.ProcessedTransaction, error) {
-	url := c.GetURL("/api/fabric/v1/node/getTransdata")
 
-	data := &nodereq.TxTransReqData{}
-	data.Header = c.GetHeader()
-	data.Body = body
-	data.Mac = c.Sign(data.GetEncryptionValue())
+	req := &nodereq.TxTransReqData{}
+	req.Header = c.GetHeader()
+	req.Body = body
 
-	reqBytes, _ := json.Marshal(data)
-
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
-	if err != nil {
-		logger.Error("gateway interface call failed：", err)
-		return nil, nil, err
-	}
 	res := &noderes.TranDataRes{}
 
-	err = json.Unmarshal(resBytes, res)
-
+	err := c.Call(GetTransData, req, res)
 	if err != nil {
-		logger.Error("return parameter serialization failed：", err)
-		return nil, nil, err
+		return nil, nil, errors.WithMessagef(err, "call %s has error", GetTransData)
 	}
+
 	trans := &pb.ProcessedTransaction{}
 	trans, err = blockconvert.ConvertToTran(res.Body.TransData)
 	if err != nil {
@@ -157,31 +117,16 @@ func (c *FabricClient) GetTransData(body nodereq.TxTransReqDataBody) (*noderes.T
 // GetBlockInfo query fabric block data
 func (c *FabricClient) GetBlockInfo(body nodereq.BlockReqDataBody) (*noderes.BlockResData, error) {
 
-	url := c.GetURL("/api/fabric/v1/node/getBlockInfo")
-
-	data := &nodereq.BlockReqData{}
-	data.Header = c.GetHeader()
-	data.Body = body
-	data.Mac = c.Sign(data.GetEncryptionValue())
-
-	reqBytes, _ := json.Marshal(data)
-
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
-
-	if err != nil {
-		logger.Error("gateway interface call failed：", err)
-		return nil, err
-	}
+	req := &nodereq.BlockReqData{}
+	req.Header = c.GetHeader()
+	req.Body = body
 
 	res := &noderes.BlockResData{}
 
-	err = json.Unmarshal(resBytes, res)
-
+	err := c.Call(GetBlockInfo, req, res)
 	if err != nil {
-		logger.Error("return parameter serialization failed：", err)
-		return nil, err
+		return nil, errors.WithMessagef(err, "call %s has error", GetBlockInfo)
 	}
-
 	return res, nil
 }
 
@@ -189,31 +134,18 @@ func (c *FabricClient) GetBlockInfo(body nodereq.BlockReqDataBody) (*noderes.Blo
 // but the return data is "common.Block" serialized bytes after Base64 encoding .
 func (c *FabricClient) GetBlockData(body nodereq.BlockReqDataBody) (*noderes.BlockDataRes, *common.Block, error) {
 
-	url := c.GetURL("/api/fabric/v1/node/getBlockData")
-
-	data := &nodereq.BlockReqData{}
-	data.Header = c.GetHeader()
-	data.Body = body
-	data.Mac = c.Sign(data.GetEncryptionValue())
-
-	reqBytes, _ := json.Marshal(data)
-
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
-
-	if err != nil {
-		logger.Error("gateway interface call failed：", err)
-		return nil, nil, err
-	}
+	req := &nodereq.BlockReqData{}
+	req.Header = c.GetHeader()
+	req.Body = body
 
 	res := &noderes.BlockDataRes{}
-	block := &common.Block{}
-	err = json.Unmarshal(resBytes, res)
 
+	err := c.Call(GetBlockData, req, res)
 	if err != nil {
-		logger.Error("return parameter serialization failed：", err)
-		return nil, nil, err
+		return nil, nil, errors.WithMessagef(err, "call %s has error", GetBlockData)
 	}
 
+	block := &common.Block{}
 	if len(res.Body.BlockData) > 0 {
 		block, err = blockconvert.ConvertToBlock(res.Body.BlockData)
 		if err != nil {
@@ -228,28 +160,14 @@ func (c *FabricClient) GetBlockData(body nodereq.BlockReqDataBody) (*noderes.Blo
 // GetBlockData query fabric ledger data
 func (c *FabricClient) GetLedgerInfo() (*noderes.LedgerResData, error) {
 
-	url := c.GetURL("/api/fabric/v1/node/getLedgerInfo")
-
-	data := &nodereq.LedgerReqData{}
-	data.Header = c.GetHeader()
-	data.Mac = c.Sign(data.GetEncryptionValue())
-
-	reqBytes, _ := json.Marshal(data)
-
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
-
-	if err != nil {
-		logger.Error("gateway interface call failed：", err)
-		return nil, err
-	}
+	req := &nodereq.LedgerReqData{}
+	req.Header = c.GetHeader()
 
 	res := &noderes.LedgerResData{}
 
-	err = json.Unmarshal(resBytes, res)
-
+	err := c.Call(GetLedgerInfo, req, res)
 	if err != nil {
-		logger.Error("return parameter serialization failed：", err)
-		return nil, err
+		return nil, errors.WithMessagef(err, "call %s has error", GetLedgerInfo)
 	}
 
 	return res, nil

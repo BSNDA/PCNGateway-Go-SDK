@@ -1,14 +1,13 @@
 package client
 
 import (
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/config"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/sign"
-	"github.com/BSNDA/bsn-sdk-crypto/crypto/secp256k1"
-	"github.com/BSNDA/bsn-sdk-crypto/crypto/secp256r1"
-	"github.com/BSNDA/bsn-sdk-crypto/crypto/sm"
+	"github.com/BSNDA/bsn-sdk-crypto/key"
+	crySign "github.com/BSNDA/bsn-sdk-crypto/sign"
+	"github.com/pkg/errors"
 	"github.com/wonderivan/logger"
 )
 
@@ -19,26 +18,25 @@ type Client struct {
 
 func (c *Client) SetAlgorithm(algorithmType enum.App_AlgorithmType, puk, pri string) error {
 
-	var sh sign.SignHandle
-	var err error
+	kt := algorithmType.ToKeyType()
 
-	switch algorithmType {
-	case enum.AppAlgorithmType_SM2:
-		sh, err = sm.NewSM2Handle(puk, pri)
-	case enum.AppAlgorithmType_R1:
-		sh, err = secp256r1.NewEcdsaR1Handle(puk, pri)
-	case enum.AppAlgorithmType_K1:
-		sh, err = secp256k1.NewEcdsaK1Handle(puk, pri)
-	default:
-		return errors.New("Invalid certificate type")
-	}
-
+	privKey, err := key.NewPrivateKeyProvider(kt, pri)
 	if err != nil {
-		return err
-	} else {
-		c.sign = sign.NewCrypto(sh)
-		return nil
+		return errors.WithMessagef(err, "new [%s] private key provider key has error", kt.String())
 	}
+
+	pubKey, err := key.NewPublicProvider(kt, puk)
+	if err != nil {
+		return errors.WithMessagef(err, "new [%s] public key provider key has error", kt.String())
+	}
+
+	sh, err := crySign.NewSignProvider(crySign.WithPrivateKey(privKey), crySign.WithPublicKey(pubKey))
+	if err != nil {
+		return errors.WithMessagef(err, "new [%s] sign provider has error", kt.String())
+	}
+
+	c.sign = sign.NewCrypto(sh)
+	return nil
 
 }
 
@@ -55,7 +53,7 @@ func (c *Client) Sign(data string) string {
 	mac, err := c.sign.Sign(data)
 
 	if err != nil {
-		logger.Error("Exception in signature")
+		logger.Error("Exception in signature : %s", err.Error())
 	}
 
 	return mac

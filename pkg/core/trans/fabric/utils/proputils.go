@@ -11,7 +11,6 @@ Please review third_party pinning scripts and patches for more details.
 package utils
 
 import (
-	"github.com/BSNDA/PCNGateway-Go-SDK/third_party/github.com/hyperledger/fabric/common/util"
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric-protos-go/common"
 	"github.com/hyperledger/fabric-protos-go/peer"
@@ -118,7 +117,7 @@ func CreateChaincodeProposalWithTxIDNonceAndTransient(txid string, typ common.He
 	// get a more appropriate mechanism to handle it in.
 	var epoch uint64
 
-	timestamp := util.CreateUtcTimestamp()
+	timestamp := CreateUtcTimestamp()
 
 	hdr := &common.Header{
 		ChannelHeader: MarshalOrPanic(

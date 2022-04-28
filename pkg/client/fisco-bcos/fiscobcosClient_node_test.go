@@ -16,8 +16,6 @@ func getClient(t *testing.T) *FiscoBcosClient {
 		t.Fatal(err)
 	}
 
-	fmt.Println("cert", config.GetCert())
-
 	fabricClient, err := NewFiscoBcosClient(config)
 
 	if err != nil {
@@ -33,8 +31,6 @@ func getK1Client(t *testing.T) *FiscoBcosClient {
 		t.Fatal(err)
 	}
 
-	fmt.Println("cert", config.GetCert())
-
 	fabricClient, err := NewFiscoBcosClient(config)
 
 	if err != nil {
@@ -49,8 +45,6 @@ func getSMClient(t *testing.T) *FiscoBcosClient {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	fmt.Println("cert", config.GetCert())
 
 	fabricClient, err := NewFiscoBcosClient(config)
 

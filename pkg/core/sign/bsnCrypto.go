@@ -1,48 +1,51 @@
 package sign
 
-import "encoding/base64"
+import (
+	"encoding/base64"
+	"github.com/BSNDA/bsn-sdk-crypto/sign"
+)
 
 type Crypto interface {
 	Sign(value string) (string, error)
 	Verify(mac, value string) bool
 }
 
-func NewCrypto(sign SignHandle) Crypto {
+func NewCrypto(sign sign.SignProvider) Crypto {
 
-	return &bsnCrypto{
+	return &gatewayCrypto{
 		sign: sign,
 	}
 
 }
 
-type bsnCrypto struct {
-	sign SignHandle
+type gatewayCrypto struct {
+	sign sign.SignProvider
 }
 
-func (g *bsnCrypto) Sign(value string) (string, error) {
+func (g *gatewayCrypto) Sign(value string) (string, error) {
 
-	digest, _ := g.sign.Hash([]byte(value))
+	digest := g.sign.Hash([]byte(value))
 
-	sign, err := g.sign.Sign(digest)
+	signBytes, err := g.sign.Sign(digest)
 	if err != nil {
 		return "", err
 	}
 
-	mac := base64.StdEncoding.EncodeToString(sign)
+	mac := base64.StdEncoding.EncodeToString(signBytes)
 
 	return mac, nil
 }
 
-func (g *bsnCrypto) Verify(mac, value string) bool {
+func (g *gatewayCrypto) Verify(mac, value string) bool {
 
-	sign, err := base64.StdEncoding.DecodeString(mac)
+	signBytes, err := base64.StdEncoding.DecodeString(mac)
 	if err != nil {
 		return false
 	}
 
-	digest, _ := g.sign.Hash([]byte(value))
+	digest := g.sign.Hash([]byte(value))
 
-	falg, err := g.sign.Verify(sign, digest)
+	falg, err := g.sign.Verify(signBytes, digest)
 
 	if err != nil {
 		return false

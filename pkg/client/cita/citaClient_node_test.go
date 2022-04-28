@@ -53,6 +53,11 @@ func TestCitaClient_ReqChainCode_insert(t *testing.T) {
 	fmt.Println(citaClient.Verify(res.Mac, res.GetEncryptionValue()))
 
 }
+
+func TestName(t *testing.T) {
+	s := fmt.Sprintf("%064s", hex.EncodeToString([]byte("123")))
+	fmt.Println(s)
+}
 func TestCitaClient_ReqChainCode_update(t *testing.T) {
 
 	citaClient := getCitaClient(t)

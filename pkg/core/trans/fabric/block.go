@@ -3,8 +3,8 @@ package fabric
 import (
 	"encoding/base64"
 	"github.com/golang/protobuf/proto"
+	"github.com/hyperledger/fabric-config/protolator"
 	"github.com/hyperledger/fabric-protos-go/common"
-	"github.com/hyperledger/fabric/common/tools/protolator"
 	"github.com/pkg/errors"
 	"strings"
 )
@@ -15,7 +15,6 @@ func ConvertToBlock(blockData string) (*common.Block, error) {
 	if err != nil {
 		return nil, errors.WithMessage(err, "convert block data has error")
 	}
-
 	block := &common.Block{}
 
 	err = proto.Unmarshal(blockBytes, block)

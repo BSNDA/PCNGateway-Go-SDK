@@ -1,142 +1,169 @@
 package fabric
 
 import (
-	"encoding/json"
-	"fmt"
+	"encoding/hex"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
 
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
+	"github.com/BSNDA/bsn-sdk-crypto/key"
+	"io/ioutil"
+	"path"
+
+	"github.com/pkg/errors"
 	"github.com/wonderivan/logger"
 
-	"github.com/BSNDA/bsn-sdk-crypto/crypto/secp256r1"
-	"github.com/BSNDA/bsn-sdk-crypto/crypto/sm"
-	ksecdsa "github.com/BSNDA/bsn-sdk-crypto/keystore/ecdsa"
-	kssm "github.com/BSNDA/bsn-sdk-crypto/keystore/sm"
-
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/cert"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
 	userreq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/user"
 	userres "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/fabric/user"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/sign"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
+)
+
+const (
+	RegisterUser = "user/register"
+	EnrollUser   = "user/enroll"
 )
 
 // RegisterUser register sub user
 func (c *FabricClient) RegisterUser(body userreq.RegisterReqDataBody) (*userres.RegisterResData, error) {
 
-	url := c.GetURL("/api/fabric/v1/user/register")
-
-	data := &userreq.RegisterReqData{}
-	data.Header = c.GetHeader()
-	data.Body = body
-	data.Mac = c.Sign(data.GetEncryptionValue())
-
-	reqBytes, _ := json.Marshal(data)
-
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
-
-	if err != nil {
-		logger.Error("gateway interface call failed：", err)
-		return nil, err
-	}
-
+	req := &userreq.RegisterReqData{}
+	req.Header = c.GetHeader()
+	req.Body = body
 	res := &userres.RegisterResData{}
 
-	err = json.Unmarshal(resBytes, res)
+	err := c.Call(RegisterUser, req, res)
 	if err != nil {
-		logger.Error("return parameter serialization failed：", err)
-		return nil, err
+		return nil, errors.WithMessagef(err, "call %s has error", RegisterUser)
 	}
-	//if !c.Verify(res.Mac, res.GetEncryptionValue()) {
-	//	return nil, errors.New("sign has error")
-	//}
-
 	return res, nil
 }
 
+// DefaultSaveKey Default delegate method for saving private key
+func DefaultSaveKey(dir string) KeyOpts {
+	return func(rawPem []byte, alias string) error {
+		keyFile := path.Join(dir, alias+"_sk")
+		err := ioutil.WriteFile(keyFile, rawPem, 0600)
+		if err != nil {
+			logger.Debug("Failed storing private key [%s]: [%s]", keyFile, err)
+			return err
+		}
+		return nil
+	}
+}
+
 // EnrollUser enroll sub user certificate and store to local folder and FabricClient.Users
-func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) error {
+func (c *FabricClient) EnrollUser(body userreq.RegisterReqDataBody) (*userres.EnrollResData, error) {
 
 	enrollBody := userreq.EnrollReqDataBody{
 		Name:   body.Name,
 		Secret: body.Secret,
 	}
 
-	csr, key, err := cert.GetCSRPEM(c.subUserCertName(enrollBody.Name), c.Config.GetAppInfo().AlgorithmType, c.ks)
+	privKey, err := key.NewPrivateKeyByGen(c.appInfo.AlgorithmType.ToKeyType())
 	if err != nil {
-		fmt.Println(err)
-		return err
+		return nil, errors.WithMessage(err, "Generate private key has error")
 	}
 
-	enrollBody.CsrPem = csr
+	csrReq := key.NewCertificateRequest(c.subUserCertName(enrollBody.Name))
 
+	csrBytes, err := privKey.GenCSR(csrReq)
+	if err != nil {
+		return nil, errors.WithMessage(err, "Generate csr has error")
+	}
+
+	rawKey, err := privKey.KeyPEM()
+	if err != nil {
+		return nil, errors.WithMessage(err, "privateKey to PEM has error")
+	}
+
+	// save key
+	err = c.keyOpts.StoreKey(rawKey, hex.EncodeToString(privKey.SKI()))
+	if err != nil {
+		return nil, errors.WithMessage(err, "save privateKey has error")
+	}
+
+	user := c.newUser(body.Name)
+	user.PrivateKey = privKey
+
+	enrollBody.CsrPem = string(csrBytes)
 	res, err := c.enroll(enrollBody)
-
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if res.Header.Code == base.Header_success_code {
-
-		var pk interface{}
-		var sh sign.SignHandle
-
-		if c.Config.GetAppInfo().AlgorithmType == enum.AppAlgorithmType_SM2 {
-			pk = kssm.GetSmPrivateKey(key)
-			sh = sm.NewTransUserSMHandle(kssm.GetSmPrivateKey(key))
-
-		} else {
-			pk = ksecdsa.GetECDSAPrivateKey(key)
-			sh = secp256r1.NewTransUserR1Handle(ksecdsa.GetECDSAPrivateKey(key))
-		}
-		user := &msp.UserData{
-			UserName:              enrollBody.Name,
-			AppCode:               c.Config.GetAppInfo().AppCode,
-			MspId:                 c.Config.GetAppInfo().MspId,
-			EnrollmentCertificate: []byte(res.Body.Cert),
-			PrivateKey:            pk,
-		}
-		user.SetSignHandle(sh)
-
-		c.us.Store(user)
-		c.Users[user.UserName] = user
-	} else {
-		return errors.New(res.Header.Msg)
+	if res.Header.Code == base.Header_error_code {
+		return nil, errors.New(res.Header.Msg)
 	}
 
-	return nil
+	user.EnrollmentCertificate = []byte(res.Body.Cert)
+	err = c.userOpts.Store(user)
+	if err != nil {
+		logger.Warn("user [%s] cert store has error : %s", user.UserName, err.Error())
+	}
 
+	c.users[body.Name] = user
+
+	return res, nil
 }
 
 // enroll enroll sub user certificate
 func (c *FabricClient) enroll(body userreq.EnrollReqDataBody) (*userres.EnrollResData, error) {
 
-	url := c.GetURL("/api/fabric/v1/user/enroll")
-
-	data := &userreq.EnrollReqData{}
-	data.Header = c.GetHeader()
-	data.Body = body
-	data.Mac = c.Sign(data.GetEncryptionValue())
-
-	reqBytes, _ := json.Marshal(data)
-
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
-
-	if err != nil {
-		logger.Error("gateway interface call failed：", err)
-		return nil, err
-	}
+	req := &userreq.EnrollReqData{}
+	req.Header = c.GetHeader()
+	req.Body = body
 
 	res := &userres.EnrollResData{}
 
-	err = json.Unmarshal(resBytes, res)
-
+	err := c.Call(EnrollUser, req, res)
 	if err != nil {
-		logger.Error("return parameter serialization failed：", err)
+		return nil, errors.WithMessagef(err, "call %s has error", EnrollUser)
+	}
+	return res, nil
+
+}
+
+func (c *FabricClient) newUser(userName string) *msp.UserData {
+	user := &msp.UserData{
+		UserName: userName,
+		AppCode:  c.appInfo.AppCode,
+		MspId:    c.appInfo.MspId,
+		TxHash:   c.appInfo.TxHash(),
+	}
+
+	return user
+}
+
+// LoadUser load user from local store , before, the cache is checked from the client users
+func (c *FabricClient) LoadUser(userName string) (*msp.UserData, error) {
+
+	user, ok := c.users[userName]
+	if ok {
+		return user, nil
+	}
+
+	user = c.newUser(userName)
+	err := c.userOpts.Load(user)
+	if err != nil {
 		return nil, err
 	}
 
-	return res, nil
+	puk, err := key.NewPublicProvider(c.appInfo.AlgorithmType.ToKeyType(), string(user.EnrollmentCertificate))
+	if err != nil {
+		return nil, errors.WithMessage(err, "cert pem load has error")
+	}
 
+	alias := hex.EncodeToString(puk.SKI())
+
+	rawkey, err := c.keyOpts.LoadKey(alias)
+	if err != nil {
+		return nil, errors.WithMessage(err, "load private key has error")
+	}
+
+	k, err := key.NewPrivateKeyProvider(c.appInfo.AlgorithmType.ToKeyType(), string(rawkey))
+	if err != nil {
+		return nil, errors.WithMessage(err, "new private key provider has error")
+	}
+
+	user.PrivateKey = k
+	c.users[userName] = user
+	return user, nil
 }

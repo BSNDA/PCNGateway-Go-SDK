@@ -3,9 +3,9 @@ package xuperchain
 import (
 	"encoding/json"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/http"
 	req "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/xuperchain/user"
 	res "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/xuperchain/user"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 	"github.com/wonderivan/logger"
 )
 
@@ -19,7 +19,7 @@ func (c *XuperChainClient) RegisterUser(body req.RegisterUserReqDataBody) (*res.
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)

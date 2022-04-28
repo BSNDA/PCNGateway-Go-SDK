@@ -5,7 +5,7 @@ import (
 	res "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/xuperchain/event"
 
 	"encoding/json"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/http"
 	"github.com/wonderivan/logger"
 )
 
@@ -21,7 +21,7 @@ func (c *XuperChainClient) RegisterEvent(body req.RegisterEventReqDataBody) (*re
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
@@ -51,7 +51,7 @@ func (c *XuperChainClient) QueryEvent() (*res.QueryEventResData, error) {
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
@@ -82,7 +82,7 @@ func (c *XuperChainClient) RemoveEvent(body req.RemoveEventReqDataBody) (*res.Re
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)

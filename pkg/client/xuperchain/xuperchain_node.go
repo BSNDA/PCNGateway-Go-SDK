@@ -8,9 +8,9 @@ package xuperchain
 import (
 	"encoding/json"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/http"
 	req "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/xuperchain/node"
 	res "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/xuperchain/node"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 	"github.com/wonderivan/logger"
 )
 
@@ -25,7 +25,7 @@ func (c *XuperChainClient) SdkTran(body req.UPukCallContractReqDataReqDataBody) 
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
@@ -57,7 +57,7 @@ func (c *XuperChainClient) ReqChainCode(body req.CallContractReqDataReqDataBody)
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
@@ -89,7 +89,7 @@ func (c *XuperChainClient) GetTxInfo(body req.GetTxInfoReqDataBody) (*res.GetTxI
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
@@ -120,7 +120,7 @@ func (c *XuperChainClient) GetBlockInfo(body req.GetBlockInfoReqDataBody) (*res.
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)

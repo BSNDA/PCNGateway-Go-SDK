@@ -97,7 +97,7 @@ func getK1Key() string {
 
 }
 
-func getGatewayPublicKey(algorithmType enum.App_AlgorithmType) string {
+func GetGatewayPublicKey(algorithmType enum.App_AlgorithmType) string {
 	switch algorithmType {
 	case enum.AppAlgorithmType_SM2:
 		return getSmKey()
