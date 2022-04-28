@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/cache/proc"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/cache/proc"
 	"time"
 )
 

@@ -21,7 +21,6 @@ func getXuperChainClient(t *testing.T) *XuperChainClient {
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Println("cert", config.GetCert())
 	client, err := NewXuperChainClient(config)
 	if err != nil {
 		t.Fatal(err)

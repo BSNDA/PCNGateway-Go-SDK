@@ -19,6 +19,8 @@ type AppInfoResDataBody struct {
 	//groupId in FISCO BCOS Dapp
 	ChannelId string `json:"channelId"`
 	Version   string `json:"version"`
+
+	FabricVersion string `json:"fabricVersion,omitempty"`
 }
 
 func (f *AppInfoResData) GetEncryptionValue() string {

@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans/cita/pb"
-	"github.com/BSNDA/bsn-sdk-crypto/crypto/sm"
+	"github.com/BSNDA/bsn-sdk-crypto/key"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/golang/protobuf/proto"
-	"github.com/tjfoc/gmsm/sm2"
 	"math/big"
 	"strconv"
 )
@@ -72,7 +71,7 @@ func ToBytes32(b []byte) ([]byte, error) {
 	}
 }
 
-func SignData(tx *pb.Transaction, priKey interface{}, isSM bool) ([]byte, error) {
+func SignData(tx *pb.Transaction, priKey key.PrivateKeyProvider, isSM bool) ([]byte, error) {
 
 	txb, err := proto.Marshal(tx)
 	if err != nil {
@@ -80,23 +79,25 @@ func SignData(tx *pb.Transaction, priKey interface{}, isSM bool) ([]byte, error)
 	}
 	if isSM {
 
-		pk := priKey.(*sm2.PrivateKey)
+		//pk := priKey.Key().(*sm2.PrivateKey)
 
-		r, s, _, err := sm.SignDataCita(pk, txb)
+		h := priKey.Hash(txb)
+
+		r, s, _, err := priKey.SignTx(h)
 
 		if err != nil {
 			return nil, err
 		}
-		publicKeyStr := fmt.Sprintf("%s%s", fillStr64(String16(pk.X)), fillStr64(String16(pk.Y)))
+		//publicKeyStr := fmt.Sprintf("%s%s", fillStr64(String16(pk.X)), fillStr64(String16(pk.Y)))
 		sign := fmt.Sprintf("%s%s", fillStr64(String16(r)), fillStr64(String16(s)))
 		signBytes, err := hex.DecodeString(sign)
 		if err != nil {
 			return nil, err
 		}
-		publicKeyBytes, err := hex.DecodeString(publicKeyStr)
-		if err != nil {
-			return nil, err
-		}
+		publicKeyBytes := priKey.PublicKey().Bytes()[1:]
+		//if err != nil {
+		//	return nil, err
+		//}
 		return BytesCombine(signBytes, publicKeyBytes), nil
 	}
 

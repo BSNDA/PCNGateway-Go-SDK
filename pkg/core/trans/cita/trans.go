@@ -3,9 +3,9 @@ package cita
 import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/uuid"
+	"github.com/BSNDA/bsn-sdk-crypto/key"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/tjfoc/gmsm/sm3"
 
 	"bytes"
 	"strings"
@@ -16,7 +16,7 @@ var (
 	Value = []byte{0x0}
 )
 
-func TransData(contractabi, contractAddress string, funcName string, args []interface{}, blockLimit uint64, chainId string, version uint32, smcrypto bool, privKey interface{}) (string, bool, error) {
+func TransData(contractabi, contractAddress string, funcName string, args []interface{}, blockLimit uint64, chainId string, version uint32, smcrypto bool, privKey key.PrivateKeyProvider) (string, bool, error) {
 
 	abi, err := abi.JSON(strings.NewReader(contractabi))
 	if err != nil {
@@ -39,10 +39,6 @@ func TransData(contractabi, contractAddress string, funcName string, args []inte
 	toAddress := common.HexToAddress(contractAddress)
 
 	nonce := uuid.GetUUID()
-
-	if err != nil {
-		return "", false, err
-	}
 
 	tx := NewTransaction(nonce, toAddress, QUOTA, blockLimit, Value, chainId, funcData, version)
 
@@ -95,10 +91,8 @@ func pack(abi *abi.ABI, funcName string, args []interface{}, sm bool) ([]byte, e
 
 func getMethodId(method abi.Method) []byte {
 	digest := []byte(method.Sig)
-
-	h := sm3.New()
-	h.Write(digest)
-	hash := h.Sum(nil)
+	h := &key.SM3Hash{}
+	hash := h.Hash(digest)
 	return hash[:4]
 }
 

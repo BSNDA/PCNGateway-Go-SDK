@@ -3,9 +3,9 @@ package app
 import (
 	"encoding/json"
 
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/http"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 )
 
 // GetAppInfo query basic information of Dapp
@@ -15,7 +15,7 @@ func GetAppInfo(data *req.AppInfoReqData, baseApi string, cert string) (*res.App
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, cert)
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		return nil, err

@@ -1,7 +1,6 @@
 package fabric
 
 import (
-	"fmt"
 	req "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fabric/user"
 	"testing"
 )
@@ -9,7 +8,7 @@ import (
 func TestFabricClient_RegisterUser(t *testing.T) {
 	fabricClient := getFabricClient(t)
 	body := req.RegisterReqDataBody{
-		Name:             "user202109171436",
+		Name:             "user20220421",
 		Secret:           "123456",
 		ExtendProperties: "{'key1':'abc'}", //用户拓展属性，json格式，非必填
 	}
@@ -30,19 +29,13 @@ func TestFabricClient_EnrollUser(t *testing.T) {
 	fabricClient := getFabricClient(t)
 
 	body := req.RegisterReqDataBody{
-		Name:   "user20210811",
+		Name:   "user20220421",
 		Secret: "123456",
 	}
 
-	res := fabricClient.EnrollUser(body)
+	_, err := fabricClient.EnrollUser(body)
 
-	if res != nil {
-		t.Fatal(res.Error())
+	if err != nil {
+		t.Fatal(err.Error())
 	}
-}
-
-func TestFabricClient_LoadUser(t *testing.T) {
-	fabricClient := getFabricClient(t)
-
-	fmt.Println(*fabricClient.Users["abcde"])
 }

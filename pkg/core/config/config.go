@@ -6,6 +6,7 @@ import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/base"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/enum"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req"
+	"github.com/BSNDA/bsn-sdk-crypto/key"
 	"path"
 )
 
@@ -13,41 +14,19 @@ const (
 	_KeyStore = "keystore"
 )
 
-// Create a profile information
-// api: address of the node gateway
-// userCode: user's code
-// appCode: DApp code
-// puk : public key cert of node gateway
-// prk : private key of DApp cert
-// cert:https cert path
-func NewConfig(api, userCode, appCode, puk, prk, mspDir, cert string) (*Config, error) {
-
-	config := &Config{
-		nodeApi:  api,
-		mspDir:   mspDir,
-		httpCert: cert,
-		appCert:  certInfo{AppPublicCert: puk, UserAppPrivateCert: prk},
-		user:     userInfo{UserCode: userCode},
-		app:      appInfo{AppCode: appCode},
-	}
-	err := config.Init()
-	return config, err
-}
-
 //Create a profile information
 // api: address of the node gateway
 // userCode: user's code
 // appCode: DApp code
 // prk : private key of DApp cert
-func NewConfig2(api, userCode, appCode, prk, mspDir string) (*Config, error) {
+func NewConfig(api, userCode, appCode, prk, mspDir string) (*Config, error) {
 
 	config := &Config{
-		nodeApi:  api,
-		mspDir:   mspDir,
-		httpCert: "",
-		appCert:  certInfo{AppPublicCert: "", UserAppPrivateCert: prk},
-		user:     userInfo{UserCode: userCode},
-		app:      appInfo{AppCode: appCode},
+		nodeApi: api,
+		mspDir:  mspDir,
+		appCert: CertInfo{AppPublicCert: "", UserAppPrivateCert: prk},
+		user:    userInfo{UserCode: userCode},
+		app:     AppInfo{AppCode: appCode},
 	}
 	err := config.Init()
 	return config, err
@@ -58,26 +37,23 @@ type Config struct {
 	mspDir  string
 
 	user userInfo
-	app  appInfo
+	app  AppInfo
 
 	//DApp cert【public key of bsn node gateway and private key of user's DApp】
-	appCert certInfo
-
-	//https connection cert
-	httpCert string
+	appCert CertInfo
 
 	isInit bool
 }
 
-func (c *Config) GetAppInfo() appInfo {
+func (c *Config) GetAppInfo() AppInfo {
 	return c.app
 }
 
-func (c *Config) GetCert() string {
-	return c.httpCert
+func (c *Config) GetUserCode() string {
+	return c.user.UserCode
 }
 
-func (c *Config) GetAppCert() certInfo {
+func (c *Config) GetAppCert() CertInfo {
 	return c.appCert
 }
 
@@ -109,7 +85,7 @@ func (c *Config) Init() error {
 		reqData.Header = c.GetReqHeader()
 
 		//reqData.Body = req.AppInfoReqDataBody{}
-		res, err := app.GetAppInfo(&reqData, c.nodeApi, c.httpCert)
+		res, err := app.GetAppInfo(&reqData, c.nodeApi, "")
 
 		if err != nil {
 			return err
@@ -125,7 +101,7 @@ func (c *Config) Init() error {
 		c.app.AlgorithmType = enum.App_AlgorithmType(res.Body.AlgorithmType)
 
 		if c.appCert.AppPublicCert == "" {
-			c.appCert.AppPublicCert = getGatewayPublicKey(c.app.AlgorithmType)
+			c.appCert.AppPublicCert = GetGatewayPublicKey(c.app.AlgorithmType)
 		}
 
 		if c.appCert.AppPublicCert == "" {
@@ -135,14 +111,14 @@ func (c *Config) Init() error {
 		c.app.MspId = res.Body.MspId
 
 		c.app.ChannelId = res.Body.ChannelId
-		c.app.Version = res.Body.Version
+		c.app.Version = res.Body.FabricVersion
 		c.isInit = true
 	}
 
 	return nil
 }
 
-type certInfo struct {
+type CertInfo struct {
 	//public key cert of DApp
 	AppPublicCert string
 
@@ -152,7 +128,7 @@ type certInfo struct {
 	UserAppPrivateCert string
 }
 
-type appInfo struct {
+type AppInfo struct {
 	AppCode string
 	AppType string
 
@@ -166,13 +142,14 @@ type appInfo struct {
 	Version   string
 }
 
-type userInfo struct {
-	UserCode string
+func (a *AppInfo) TxHash() key.HashProvider {
+	if a.AlgorithmType == enum.AppAlgorithmType_SM2 && a.Version == "2.2.1" {
+		return &key.SM3Hash{}
+	} else {
+		return &key.SHA256Hash{}
+	}
 }
 
-type orgConfig struct {
-	OrgCode string
-	MspId   string
-
-	NodeApi string
+type userInfo struct {
+	UserCode string
 }

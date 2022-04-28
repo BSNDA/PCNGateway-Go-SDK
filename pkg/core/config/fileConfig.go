@@ -42,7 +42,7 @@ func NewConfigFormFile(path string) (*Config, error) {
 		fileConf.MspPath = _DefaultMSPPath
 	}
 
-	return NewConfig2(fileConf.NodeApi,
+	return NewConfig(fileConf.NodeApi,
 		fileConf.UserCode,
 		fileConf.AppCode,
 		fileConf.UserPrivateKey,

@@ -5,13 +5,16 @@ import "encoding/json"
 type ReqHeader struct {
 	UserCode string `json:"userCode"` // User unique identification
 	AppCode  string `json:"appCode"`  // App unique identification
-	TId      string `json:"tId"`
+	//TId      string `json:"tId"`
 }
 
 type BaseReqModel struct {
 	Header ReqHeader `json:"header"`
+	Mac    string    `json:"mac"`
+}
 
-	Mac string `json:"mac"`
+func (b *BaseReqModel) SetMac(mac string) {
+	b.Mac = mac
 }
 
 func (b *BaseReqModel) GetBaseEncryptionValue() string {

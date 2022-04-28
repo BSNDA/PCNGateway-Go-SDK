@@ -17,7 +17,7 @@ LT5IUX0wXZQ7RRIgxQ6VGSDneOKgCgYIKoZIzj0DAQehRANCAAS+iGu+3yofOh0H
 VQTCefws
 -----END PRIVATE KEY-----`
 	SetTest()
-	return NewConfig2(api, userCode, appCode, privK, _MspDir)
+	return NewConfig(api, userCode, appCode, privK, _MspDir)
 }
 
 func NewMockFiscoConfig() (*Config, error) {
@@ -32,7 +32,7 @@ xcDYrMrgskyr6vthAy/Tgz/3S6SR/9ERuYVLh+Hzb6ptpIWHo0ek5j05ERh5vSzC
 PIXILYkE
 -----END PRIVATE KEY-----`
 
-	return NewConfig2(api, userCode, appCode, privK, _MspDir)
+	return NewConfig(api, userCode, appCode, privK, _MspDir)
 }
 
 func NewMockXuperchainConfig() (*Config, error) {
@@ -47,7 +47,7 @@ q7eapxSsDCo8FCdt0qfCa7eGCC7BEdGerbX4qa5j3qljl1/d6I00c7veFAvgGPP8
 DFT+md7r
 -----END PRIVATE KEY-----`
 
-	return NewConfig2(api, userCode, appCode, privK, _MspDir)
+	return NewConfig(api, userCode, appCode, privK, _MspDir)
 }
 func NewMockCitaConfig() (*Config, error) {
 	api := "http://192.168.1.43:17502"
@@ -60,5 +60,5 @@ LT5IUX0wXZQ7RRIgxQ6VGSDneOKgCgYIKoZIzj0DAQehRANCAAS+iGu+3yofOh0H
 74MQJQRivCXi6LtQGkrBe5NXAwL+8wAy+4iaESnIFsDFC2fr2qMgvd005UdvJeJu
 VQTCefws
 -----END PRIVATE KEY-----`
-	return NewConfig2(api, userCode, appCode, privK, _MspDir)
+	return NewConfig(api, userCode, appCode, privK, _MspDir)
 }

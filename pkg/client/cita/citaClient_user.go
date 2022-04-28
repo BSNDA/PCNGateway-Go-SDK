@@ -3,15 +3,15 @@ package cita
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/BSNDA/bsn-sdk-crypto/key"
 	"io/ioutil"
 	"os"
 	"path"
 
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/cert"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/http"
 	userReq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/cita/user"
 	userRes "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/cita/user"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 	"github.com/wonderivan/logger"
 )
 
@@ -27,7 +27,7 @@ func (c *CitaClient) RegisterUser(body userReq.RegisterReqDataBody) (*userRes.Re
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
@@ -48,7 +48,7 @@ func (c *CitaClient) RegisterUser(body userReq.RegisterReqDataBody) (*userRes.Re
 	return res, nil
 }
 
-func (c *CitaClient) getUser(userName string) (interface{}, error) {
+func (c *CitaClient) getUser(userName string) (key.PrivateKeyProvider, error) {
 	userPath := c.Config.GetKSPath()
 
 	fileName := getKeyFileName(userName, c.Config.GetAppInfo().AppCode)
@@ -57,11 +57,16 @@ func (c *CitaClient) getUser(userName string) (interface{}, error) {
 
 	if _, err1 := os.Stat(filePath); os.IsNotExist(err1) {
 		//create key
-		key, keyBytes, err := cert.NewUser(c.Config.GetAppInfo().AlgorithmType)
+		key, err := key.NewPrivateKeyByGen(c.Config.GetAppInfo().AlgorithmType.ToKeyType())
 		if err != nil {
 			return nil, err
 		}
-		err = storeKey(keyBytes, filePath)
+
+		ketBytes, err := key.KeyPEM()
+		if err != nil {
+			return nil, err
+		}
+		err = storeKey(ketBytes, filePath)
 		if err != nil {
 			return nil, err
 		}
@@ -76,7 +81,9 @@ func (c *CitaClient) getUser(userName string) (interface{}, error) {
 			return nil, errors.New("user key error")
 		}
 
-		return cert.GetUserKey(bytes, c.Config.GetAppInfo().AlgorithmType)
+		k, err := key.NewPrivateKeyProvider(c.Config.GetAppInfo().AlgorithmType.ToKeyType(), string(bytes))
+
+		return k, err
 
 	}
 

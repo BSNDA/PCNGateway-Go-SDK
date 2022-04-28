@@ -1,7 +1,8 @@
-package userstore
+package keystore
 
 import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/file"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
 	"io/ioutil"
 	"os"
@@ -9,27 +10,30 @@ import (
 	"strings"
 )
 
-func NewUserStore(path string) UserStore {
-	us := &FileUserStore{
+func NewUserCertStore(path string) UserCertStore {
+
+	file.CheckDir(path)
+
+	us := &FileUserCertStore{
 		FilePath: path,
 	}
 
 	return us
 }
 
-type FileUserStore struct {
+type FileUserCertStore struct {
 	FilePath string
 }
 
-func (f *FileUserStore) Load(user *msp.UserData) error {
+func (f *FileUserCertStore) Load(user *msp.UserData) error {
 	key := storeKeyName(user)
-	file := path2.Join(f.FilePath, key)
+	filePath := path2.Join(f.FilePath, key)
 
-	if _, err1 := os.Stat(file); os.IsNotExist(err1) {
+	if _, err1 := os.Stat(filePath); os.IsNotExist(err1) {
 		return errors.New("user not found")
 	}
 
-	bytes, err := ioutil.ReadFile(file) // nolint: gas
+	bytes, err := ioutil.ReadFile(filePath) // nolint: gas
 	if err != nil {
 		return err
 	}
@@ -41,7 +45,7 @@ func (f *FileUserStore) Load(user *msp.UserData) error {
 
 }
 
-func (f *FileUserStore) Store(user *msp.UserData) error {
+func (f *FileUserCertStore) Store(user *msp.UserData) error {
 	key := storeKeyName(user)
 
 	path := path2.Join(f.FilePath, key)
@@ -56,7 +60,7 @@ func (f *FileUserStore) Store(user *msp.UserData) error {
 
 }
 
-func (f *FileUserStore) LoadAll(appCode string) []*msp.UserData {
+func (f *FileUserCertStore) LoadAll(appCode string) []*msp.UserData {
 
 	var users []*msp.UserData
 

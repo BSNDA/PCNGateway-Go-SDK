@@ -2,15 +2,11 @@ package fiscobcos
 
 import (
 	"bytes"
-	"github.com/BSNDA/bsn-sdk-crypto/crypto/eth"
-	"github.com/BSNDA/bsn-sdk-crypto/crypto/sm"
-	"github.com/tjfoc/gmsm/sm3"
+	"github.com/BSNDA/bsn-sdk-crypto/key"
 	"golang.org/x/crypto/sha3"
 
-	"crypto/ecdsa"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/tjfoc/gmsm/sm2"
 	"io"
 	"math/big"
 	"sync/atomic"
@@ -105,14 +101,14 @@ func (tx *Transaction) DecodeRLP(s *rlp.Stream) error {
 	return err
 }
 
-func (tx *Transaction) SignData(priKey interface{}) ([]byte, error) {
+func (tx *Transaction) SignData(priKey key.PrivateKeyProvider) ([]byte, error) {
 	//txb, _ := rlp.EncodeToBytes(tx.data)
 
 	if tx.smcrypto {
 
-		txb := SM3HashNonSig(tx).Bytes()
-		pk := priKey.(*sm2.PrivateKey)
-		r, s, pub, err := sm.SignData(pk, txb)
+		txb := priKey.Hash(SM3HashNonSig(tx))
+
+		r, s, pub, err := priKey.SignTx(txb)
 		if err != nil {
 			return nil, err
 		}
@@ -122,13 +118,10 @@ func (tx *Transaction) SignData(priKey interface{}) ([]byte, error) {
 		tx.data.S = s
 	} else {
 		txb := Hash(tx).Bytes()
-		//hash, _ := eth.Hash(txb)
-		r, s, v, _, err := eth.SignData(priKey.(*ecdsa.PrivateKey), txb)
-
+		r, s, v, err := priKey.SignTx(txb)
 		if err != nil {
 			return nil, err
 		}
-
 		tx.data.V = v
 		tx.data.R = r
 		tx.data.S = s
@@ -161,7 +154,7 @@ func Hash(tx *Transaction) common.Hash {
 	})
 }
 
-func SM3HashNonSig(tx *Transaction) (h common.Hash) {
+func SM3HashNonSig(tx *Transaction) []byte {
 	var src []byte
 	buf := bytes.NewBuffer(src)
 	rlp.Encode(buf, []interface{}{
@@ -177,9 +170,5 @@ func SM3HashNonSig(tx *Transaction) (h common.Hash) {
 		tx.data.ExtraData,
 	})
 
-	h3 := sm3.New()
-	h3.Write(buf.Bytes())
-	hash := h3.Sum(nil)
-	copy(h[:], hash)
-	return
+	return buf.Bytes()
 }

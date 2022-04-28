@@ -1,6 +1,6 @@
 package base
 
 type ReqInterface interface {
-	GetMac() string
+	SetMac(mac string)
 	GetEncryptionValue() string
 }

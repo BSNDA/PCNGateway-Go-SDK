@@ -1,15 +1,14 @@
 package fiscobcos
 
 import (
+	"bytes"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
 	cryptocomm "github.com/BSNDA/bsn-sdk-crypto/common"
+	"github.com/BSNDA/bsn-sdk-crypto/key"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/tjfoc/gmsm/sm3"
-
-	"bytes"
 	"math/big"
 	"strings"
 )
@@ -36,7 +35,7 @@ func ParesData(contractabi, funcName string, args []interface{}, smcrypto bool) 
 
 }
 
-func TransData(contractabi, contractAddress string, funcName string, args []interface{}, groupId, blockLimit *big.Int, extraData []byte, smcrypto bool, privKey interface{}) (string, bool, error) {
+func TransData(contractabi, contractAddress string, funcName string, args []interface{}, groupId, blockLimit *big.Int, extraData []byte, smcrypto bool, privKey key.PrivateKeyProvider) (string, bool, error) {
 
 	abi, err := abi.JSON(strings.NewReader(contractabi))
 	if err != nil {
@@ -112,9 +111,8 @@ func pack(abi *abi.ABI, funcName string, args []interface{}, sm bool) ([]byte, e
 func getMethodId(method abi.Method) []byte {
 	digest := []byte(method.Sig)
 
-	h := sm3.New()
-	h.Write(digest)
-	hash := h.Sum(nil)
+	h := key.SM3Hash{}
+	hash := h.Hash(digest)
 	return hash[:4]
 }
 

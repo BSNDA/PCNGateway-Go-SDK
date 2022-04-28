@@ -3,10 +3,10 @@ package fisco_bcos
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/http"
 	nodereq "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/req/fiscobcos/node"
 	noderes "github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/res/fiscobcos/node"
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/trans/fiscobcos"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/util/http"
 	"github.com/wonderivan/logger"
 	"strconv"
 )
@@ -22,7 +22,7 @@ func (c *FiscoBcosClient) ReqChainCode(body nodereq.TransReqDataBody) (*noderes.
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
 		return nil, err
@@ -50,7 +50,7 @@ func (c *FiscoBcosClient) GetBlockInfo(body nodereq.BlockReqDataBody) (*noderes.
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
 		return nil, err
@@ -78,7 +78,7 @@ func (c *FiscoBcosClient) GetBlockHeight() (*noderes.BlockHeightResData, error) 
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
 		return nil, err
@@ -106,7 +106,7 @@ func (c *FiscoBcosClient) GetTxCount() (*noderes.BlockHeightResData, error) {
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
 		return nil, err
@@ -136,7 +136,7 @@ func (c *FiscoBcosClient) GetTxCountByBlockNumber(blockNumber int64) (*noderes.B
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
 		return nil, err
@@ -165,7 +165,7 @@ func (c *FiscoBcosClient) GetTxReceiptByTxHash(body nodereq.TxReqDataBody) (*nod
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
@@ -196,7 +196,7 @@ func (c *FiscoBcosClient) GetTxInfoByTxHash(body nodereq.TxReqDataBody) (*nodere
 
 	reqBytes, _ := json.Marshal(data)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
@@ -290,7 +290,7 @@ func (c *FiscoBcosClient) Trans(data nodereq.TransData) (*noderes.TransResData, 
 
 	reqBytes, _ := json.Marshal(reqData)
 
-	resBytes, err := http.SendPost(reqBytes, url, c.Config.GetCert())
+	resBytes, err := http.SendPost(reqBytes, url)
 	if err != nil {
 		logger.Error("gateway interface call failed：", err)
 		return nil, err

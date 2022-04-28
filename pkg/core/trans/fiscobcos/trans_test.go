@@ -13,7 +13,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/BSNDA/bsn-sdk-crypto/crypto/eth"
+	"github.com/BSNDA/bsn-sdk-crypto/key"
+	"github.com/BSNDA/bsn-sdk-crypto/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -36,9 +37,9 @@ func Test1(t *testing.T) {
 
 	var list []interface{}
 
-	//pr := new(big.Int).SetInt64(101)
-	list = append(list, "101")
-	//list = append(list, pr)
+	pr := new(big.Int).SetInt64(101)
+	//list = append(list, "101")
+	list = append(list, pr)
 	//list = append(list, "abc")
 
 	abi, err := abi.JSON(strings.NewReader(abiString))
@@ -92,7 +93,7 @@ ss9CLHlmZ/9NhcjVhTE2aMShRANCAASaYIp2L1Rl/+GSsFv3tdPVAunBYHjSfoTV
 bQVByl2ZoXPc2dNsowENzM9d8+aBoXfUVVx8Si3bm81F9b3aBdBa
 -----END PRIVATE KEY-----`
 
-	prikey, err := eth.LoadPrivateKey([]byte(prik))
+	prikey, err := key.NewPrivateKeyProvider(types.ECDSA_K1, prik) //  eth.LoadPrivateKey([]byte(prik))
 	if err != nil {
 		t.Fatal(err)
 	}

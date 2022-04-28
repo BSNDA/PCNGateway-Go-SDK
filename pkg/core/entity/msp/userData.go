@@ -2,7 +2,7 @@ package msp
 
 import (
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/common/errors"
-	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/sign"
+	"github.com/BSNDA/bsn-sdk-crypto/key"
 	"github.com/golang/protobuf/proto"
 	pb_msp "github.com/hyperledger/fabric-protos-go/msp"
 )
@@ -13,21 +13,26 @@ type UserData struct {
 	MspId                 string
 	EnrollmentCertificate []byte
 
-	PrivateKey interface{}
+	PrivateKey key.PrivateKeyProvider
 
-	sign sign.SignHandle
+	TxHash key.HashProvider
 }
 
-func (u *UserData) SetSignHandle(s sign.SignHandle) {
-	u.sign = s
+func (u *UserData) Hash() key.HashProvider {
+	if u.TxHash == nil {
+		return u.PrivateKey
+	} else {
+		return u.TxHash
+	}
 }
+
+//func (u *UserData) SetSignHandle(s sign.SignProvider) {
+//	u.sign = s
+//}
 
 func (u *UserData) Sign(digest []byte) (signature []byte, err error) {
-	hash, err := u.sign.Hash(digest)
-	if err != nil {
-		return nil, errors.New("data hash failed")
-	}
-	return u.sign.Sign(hash)
+	hash := u.PrivateKey.Hash(digest)
+	return u.PrivateKey.Sign(hash)
 }
 
 func (u *UserData) Serialize() ([]byte, error) {
