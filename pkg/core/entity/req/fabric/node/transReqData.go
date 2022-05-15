@@ -12,7 +12,9 @@ type TransReqData struct {
 
 type TransReqDataBody struct {
 	UserName string `json:"userName"`
-	Nonce    string `json:"nonce"`
+
+	// Nonce
+	Nonce string `json:"nonce"`
 
 	ChainCode    string            `json:"chainCode"`
 	FuncName     string            `json:"funcName"`

@@ -11,7 +11,6 @@ type AppInfoResData struct {
 }
 
 type AppInfoResDataBody struct {
-	AppName       string `json:"appName"`
 	AppType       string `json:"appType"`
 	CaType        int    `json:"caType"`
 	AlgorithmType int    `json:"algorithmType"`
@@ -27,11 +26,12 @@ func (f *AppInfoResData) GetEncryptionValue() string {
 
 	fp := f.GetBaseEncryptionValue()
 
-	fp = fp + f.Body.AppName
 	fp = fp + f.Body.AppType
 	fp = fp + strconv.Itoa(f.Body.CaType)
 	fp = fp + strconv.Itoa(f.Body.AlgorithmType)
 	fp = fp + f.Body.MspId
 	fp = fp + f.Body.ChannelId
+	fp = fp + f.Body.Version
+	fp = fp + f.Body.FabricVersion
 	return fp
 }

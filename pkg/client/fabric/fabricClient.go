@@ -54,10 +54,6 @@ func InitFabricClient(config *config.Config, opts ...ClientOpts) (*FabricClient,
 	return fabricClient, nil
 }
 
-// saveKey delegate method for saving private key
-type KeyOpts func(rawPem []byte, alias string) error
-type ClientOpts func(*FabricClient) error
-
 type FabricClient struct {
 	appInfo  config.AppInfo
 	userCode string
@@ -70,6 +66,9 @@ type FabricClient struct {
 	users map[string]*msp.UserData
 }
 
+type ClientOpts func(*FabricClient) error
+
+// WithUserOpts 指定的用户证书存储对象，可由调用者自己按照接口 keystore.UserCertStore 实现
 func WithUserOpts(userOpts keystore.UserCertStore) ClientOpts {
 	return func(client *FabricClient) error {
 		client.userOpts = userOpts
@@ -77,6 +76,7 @@ func WithUserOpts(userOpts keystore.UserCertStore) ClientOpts {
 	}
 }
 
+// WithUserOpts 指定的用户私钥存储对象，可由调用者自己按照接口 keystore.KeyStore 实现
 func WithKeyOpts(keyOpts keystore.KeyStore) ClientOpts {
 	return func(client *FabricClient) error {
 		client.keyOpts = keyOpts
@@ -84,6 +84,7 @@ func WithKeyOpts(keyOpts keystore.KeyStore) ClientOpts {
 	}
 }
 
+// WithDefaultNodeName 默认的客户端配置的城市名称，如果不指定，则为默认配置城市的MSPID
 func WithDefaultNodeName(nodeName string) ClientOpts {
 	return func(client *FabricClient) error {
 		client.defaultNodeName = nodeName
@@ -91,6 +92,10 @@ func WithDefaultNodeName(nodeName string) ClientOpts {
 	}
 }
 
+// AddCityNode 增加一个城市接入配置
+//  - nodeName 指定的城市名称标识，可以在执行多节点背书交易时，按照nodeName指定背书的城市列表
+//  - gateWayUrl 网关地址
+//  - privateKey 应用在该城市的接入私钥
 func (c *FabricClient) AddCityNode(nodeName, gateWayUrl, privateKey string) error {
 
 	_, ok := c.nodeClients[nodeName]

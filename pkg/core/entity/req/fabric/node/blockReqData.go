@@ -14,6 +14,8 @@ type BlockReqDataBody struct {
 	BlockNumber uint64 `json:"blockNumber"`
 	BlockHash   string `json:"blockHash"`
 	TxId        string `json:"txId"`
+	// DataType Options as json
+	DataType string `json:"dataType,omitempty"`
 }
 
 func (f *BlockReqData) GetEncryptionValue() string {
@@ -22,6 +24,7 @@ func (f *BlockReqData) GetEncryptionValue() string {
 	fp = fp + strconv.FormatUint(f.Body.BlockNumber, 10)
 	fp = fp + f.Body.BlockHash
 	fp = fp + f.Body.TxId
+	fp = fp + f.Body.DataType
 	return fp
 
 }

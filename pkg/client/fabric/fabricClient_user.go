@@ -6,9 +6,6 @@ import (
 
 	"github.com/BSNDA/PCNGateway-Go-SDK/pkg/core/entity/msp"
 	"github.com/BSNDA/bsn-sdk-crypto/key"
-	"io/ioutil"
-	"path"
-
 	"github.com/pkg/errors"
 	"github.com/wonderivan/logger"
 
@@ -34,19 +31,6 @@ func (c *FabricClient) RegisterUser(body userreq.RegisterReqDataBody) (*userres.
 		return nil, errors.WithMessagef(err, "call %s has error", RegisterUser)
 	}
 	return res, nil
-}
-
-// DefaultSaveKey Default delegate method for saving private key
-func DefaultSaveKey(dir string) KeyOpts {
-	return func(rawPem []byte, alias string) error {
-		keyFile := path.Join(dir, alias+"_sk")
-		err := ioutil.WriteFile(keyFile, rawPem, 0600)
-		if err != nil {
-			logger.Debug("Failed storing private key [%s]: [%s]", keyFile, err)
-			return err
-		}
-		return nil
-	}
 }
 
 // EnrollUser enroll sub user certificate and store to local folder and FabricClient.Users
@@ -134,7 +118,9 @@ func (c *FabricClient) newUser(userName string) *msp.UserData {
 
 // LoadUser load user from local store , before, the cache is checked from the client users
 func (c *FabricClient) LoadUser(userName string) (*msp.UserData, error) {
-
+	if userName == "" {
+		return nil, errors.New("userName can not be empty")
+	}
 	user, ok := c.users[userName]
 	if ok {
 		return user, nil
