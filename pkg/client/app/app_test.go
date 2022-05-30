@@ -29,13 +29,3 @@ func TestGetAppInfo(t *testing.T) {
 		fmt.Println(res.Body)
 	}
 }
-
-func TestName(t *testing.T) {
-	var a float64 = 0.1
-	var b float64 = 0.2
-	var c float64 = a + b
-
-	fmt.Println(c)
-	fmt.Println(0.1 + 0.2)
-	fmt.Println(0.1+0.2 == 0.3)
-}

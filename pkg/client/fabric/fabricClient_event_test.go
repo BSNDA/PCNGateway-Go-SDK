@@ -29,7 +29,7 @@ func TestFabricClient_BlockEventRegister(t *testing.T) {
 	fabricClient := getFabricClient(t)
 
 	body := req.RegisterReqDataBody{
-		NotifyUrl:  "http://192.168.1.172:58011/v1/fabric/test",
+		NotifyUrl:  "http://10.0.7.33:58011/v1/fabric/test",
 		AttachArgs: "a=1",
 	}
 
