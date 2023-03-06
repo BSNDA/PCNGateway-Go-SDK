@@ -12,8 +12,8 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/wonderivan/logger v1.0.0
 	github.com/xuperchain/crypto v0.0.0-20201022090047-228df0d80193
-	golang.org/x/crypto v0.0.0-20220128200615-198e4374d7ed
-	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd
+	golang.org/x/crypto v0.1.0
+	golang.org/x/net v0.1.0
 	google.golang.org/genproto v0.0.0-20190819201941-24fa4b261c55
 	google.golang.org/grpc v1.31.0
 )
